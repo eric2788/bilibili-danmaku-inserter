@@ -2,14 +2,26 @@ const SizePlugin = require('size-plugin')
 const path = require('path')
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
-var glob = require("glob");
 
 module.exports = {
 	//devtool: 'source-map',
     stats: 'errors-only',
 	entry: {
-        background: glob.sync('./src/background/*.js'),
-        index: './src/index.js'
+        index: './src/index.ts',
+        background: './src/background.ts',
+        webpage: './src/webpage.ts'
+    },
+    module: {
+        rules: [
+          {
+            test: /\.tsx?$/,
+            use: 'ts-loader',
+            exclude: /node_modules/,
+          },
+        ],
+    },
+    resolve: {
+        extensions: [ '.tsx', '.ts', '.js' ],
     },
 	output: {
 		path: path.join(__dirname, './dist'),
@@ -22,16 +34,10 @@ module.exports = {
             patterns: [
                 {
                     from: '**/*',
-                    context: 'src',
-                    filter: (path) => !path.endsWith('.js')
+                    context: 'assets',
                 },
                 {
-                    from: 'node_modules/webextension-polyfill/dist/browser-polyfill.js'
-                },
-                {
-                    from: 'cdn/**/*',
-                    context: 'src',
-                    to: '.'
+                    from: 'node_modules/webextension-polyfill/dist/browser-polyfill.min.js'
                 }
             ]
         })

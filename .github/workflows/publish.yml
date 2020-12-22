@@ -1,6 +1,6 @@
 env:
     version: 0.1.1
-    name: firefox_extension_template
+    name: bilibili_danmaku_inserter
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
 
 name: firefox extension publish and sign
