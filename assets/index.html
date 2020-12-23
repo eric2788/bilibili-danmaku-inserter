@@ -107,7 +107,7 @@
                                     <input class="form-check-input" type="checkbox" id="danmu-sub" disabled>
                                     <label class="form-check-label" for="danmu-sub">启用字幕(暂不可用)</label>
                                 </div>
-                                <label for="interval-range" class="form-label">发送请求间隔</label>
+                                <label for="interval-range" class="form-label">发送请求间隔(建議設置發送請求間隔為5000毫秒)</label>
                                 <div class="input-group mb-3">
                                     <input class="form-control" type="number" id="interval-range" min="1000" max="10000" value="5000" aria-describedby="interval-range-help">
                                     <span class="input-group-text" id="interval-range-help">毫秒</span>
@@ -121,6 +121,7 @@
                                     开始插入
                                     <div id="danmu-insert-loading" class="spinner-border spinner-border-sm" role="status" style="display: none;"></div>
                                 </button>
+                                <button class="btn btn-danger" id="stop-btn" disabled>中止运行</button>
                                 <button class="btn btn-success" id="user-fetch-btn" disabled>
                                     获取弹幕发送者资讯
                                     <div id="user-fetch-loading" class="spinner-border spinner-border-sm" role="status" style="display: none;"></div>

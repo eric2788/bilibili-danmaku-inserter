@@ -1,4 +1,5 @@
 export interface NotifyMessage {
     title: string,
-    message: string
+    message: string,
+    buttons?: { title: string }[]
 }

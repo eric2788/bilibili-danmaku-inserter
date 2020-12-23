@@ -5,6 +5,8 @@ import { VideoInfo } from './types/VideoInfo'
 import { NotifyMessage } from './types/NotifyMessage'
 import { DanmuSendInfo } from './types/DanmuSendInfo'
 import { ajax } from 'jquery'
+import { canUseButton } from './utils/misc'
+import { currentVersion, extName } from './managers/UpdateManager'
 
 console.log('background is working...')
 
@@ -20,6 +22,15 @@ let csrfToken: string = undefined
 async function sendNotify(data: NotifyMessage){
     console.log('sending notification')
     return browser.notifications.create({
+        type: 'basic',
+        ...data,
+        iconUrl: browser.runtime.getURL('icons/icon.png')
+    }).catch(console.error)
+}
+
+async function sendNotifyId(id: string, data: NotifyMessage){
+    console.log('sending notification')
+    return browser.notifications.create(id, {
         type: 'basic',
         ...data,
         iconUrl: browser.runtime.getURL('icons/icon.png')
@@ -62,7 +73,7 @@ function toPayload(data: DanmuSendInfo){
         fontsize: size,
         pool,
         mode,
-        rnd: Date.now() * 1000,
+        rnd: data.datetime ?? (Date.now() * 1000),
         plat: 1,
         csrf: csrfToken
     }
@@ -128,6 +139,7 @@ async function fetchVideoInfo(bvid: string, p: number): Promise<VideoInfo>{
 }
 
 CommandManager.addCommand('notify', (data, sender) => sendNotify(data))
+CommandManager.addCommand('notify-id', (data, sender) => sendNotifyId(data.id, data.data))
 CommandManager.addCommand('fetch', (data, sender) => webFetch(data.url))
 CommandManager.addCommand('get-local-data', (data, sender) => browser.storage.local.get())
 CommandManager.addCommand('send-danmu', (data, sender) => sendDanmu(data))
@@ -135,4 +147,20 @@ CommandManager.addCommand('fetch-user', (data, sender) => fetchUser())
 CommandManager.addCommand('fetch-video', (data, sender) => fetchVideoInfo(data.bvid, data.p))
 
 browser.runtime.onMessage.addListener(CommandManager.handleMessage)
+
+browser.runtime.onInstalled.addListener(async data => {
+    if (data.reason !== 'update') return
+    const msg: NotifyMessage = {
+        title: `${extName} 已更新`,
+        message: `已更新到版本 v${currentVersion}`
+    }
+    if (canUseButton){
+        msg.buttons = [
+            {
+                title: '查看更新日志'
+            }
+        ]
+    }
+    await sendNotifyId('bdi:updated', msg)
+})
 

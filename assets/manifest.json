@@ -29,6 +29,14 @@
         ]
     },
 
+    "applications": {
+      "gecko": {
+        "id": "{bbc7ff6b-4edd-40dc-bcd9-2214f91deada}",
+        "update_url": "https://eric2788.github.io/bilibili-danmaku-inserter/updates.json",
+        "strict_min_version": "78.0"
+      }
+    },
+
     "content_security_policy": "script-src 'self' https://cdn.jsdelivr.net https://code.jquery.com; object-src 'self'",
 
     "browser_action": {

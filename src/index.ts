@@ -50,6 +50,7 @@ loadingPattern({
 $(`#danmu-insert-btn`).on('click', async e => {
     $_.toggleShow(`#danmu-insert-loading`, true)
     $_.toggleDisable(`button`, true)
+    $_.toggleDisable('#stop-btn', false)
     try {
         const files = $_.input(`#danmaku-insert-file`).files
         if (files.length == 0) {
@@ -71,20 +72,25 @@ $(`#danmu-insert-btn`).on('click', async e => {
         const runner = await DanmakuManager.getRunner(f, storage)
         runner.addLogger(new ConsoleLogger(window.console))
         runner.addLogger(new DomLogger($('#main-output')[0]))
+        $('#stop-btn').one('click', () => {
+            runner.terminate()
+            $_.toggleDisable('#stop-btn', true)
+        })
         await runner.run()
         await sendNotify({
             title: '运行成功',
-            message: '所有弹幕已成功插入。'
+            message: '程序运行成功，详见输出日志。'
         })
     }catch(err){
         console.error(err)
         await sendNotify({
-            title: '插入失败。',
+            title: '运行失败。',
             message: err?.message ?? err
         })
     } finally {
         $_.toggleShow(`#danmu-insert-loading`, false)
         $_.toggleDisable(`button`, false)
+        $_.toggleDisable('#stop-btn', true)
         window.onbeforeunload = function(e: BeforeUnloadEvent) {
             delete e.returnValue
         };

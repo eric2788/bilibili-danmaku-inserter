@@ -22,6 +22,11 @@ export async function sendNotify(data: NotifyMessage){
     return sendData('notify', data)
 }
 
+export async function sendNotifyId(id: string, data: NotifyMessage){
+    return sendData('notify-id', {id, data})
+}
+
+
 export async function getLocalData(){
     return sendData('get-local-data', {})
 }

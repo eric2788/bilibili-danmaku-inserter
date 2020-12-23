@@ -112,3 +112,26 @@ export function hexColorToDecmial(hex: string){
     }
     return sum
 }
+
+export const isFirefox = navigator.userAgent.indexOf('Firefox') > -1
+
+export const isChrome = navigator.userAgent.indexOf('Chrome') > -1
+
+export const operaAgent = navigator.userAgent.indexOf("OP") > -1
+
+export const canUseButton = isChrome
+
+export const newerThan = function (str: string, version: string) {
+    const current = str.split('.')
+    const target = version.split('.')
+    for (let i = 0; i < Math.max(current.length, target.length); i++) {
+        const cv = i < current.length ? parseInt(current[i]) : 0
+        const tv = i < target.length ? parseInt(target[i]) : 0
+        if (cv > tv) {
+            return true
+        } else if (cv < tv) {
+            return false
+        }
+    }
+    return true
+}
