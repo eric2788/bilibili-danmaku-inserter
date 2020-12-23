@@ -5,11 +5,11 @@ env:
 
 name: firefox extension publish and sign
   
-#on:
-# push:
-#    branches: [ master ]
-# pull_request:
-#    branches: [ master ]
+on:
+ push:
+    branches: [ master ]
+ pull_request:
+    branches: [ master ]
   
 jobs:
  build:
