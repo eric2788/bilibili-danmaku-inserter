@@ -179,7 +179,13 @@ browser.runtime.onInstalled.addListener(async data => {
 
 //火狐可以自动更新
 if (!isFirefox){
-    updateManager.checkUpdate()
+    updateManager.checkUpdate().then(msg => {
+        if (msg?.buttons) {
+            return sendNotifyId('bdi:update', msg)
+        }else if (msg){
+            return sendNotify(msg)
+        }
+    }).catch(console.error)
 }
 
 function logLink(version: string){
