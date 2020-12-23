@@ -10,6 +10,10 @@ export type DanmuPayload = {
     interval: number
 }
 
+export async function checkUpdate(): Promise<void> {
+    return sendData('check-update', {})
+}
+
 export async function fetchUser(): Promise<{username: string, lvl: number}>{
     return sendData('fetch-user', {})
 }

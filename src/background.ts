@@ -5,8 +5,8 @@ import { VideoInfo } from './types/VideoInfo'
 import { NotifyMessage } from './types/NotifyMessage'
 import { DanmuSendInfo } from './types/DanmuSendInfo'
 import { ajax } from 'jquery'
-import { canUseButton } from './utils/misc'
-import { currentVersion, extName } from './managers/UpdateManager'
+import { canUseButton, isFirefox } from './utils/misc'
+import UpdateManager, { currentVersion, extName } from './managers/UpdateManager'
 
 console.log('background is working...')
 
@@ -25,16 +25,16 @@ async function sendNotify(data: NotifyMessage){
         type: 'basic',
         ...data,
         iconUrl: browser.runtime.getURL('icons/icon.png')
-    }).catch(console.error)
+    })
 }
 
 async function sendNotifyId(id: string, data: NotifyMessage){
-    console.log('sending notification')
+    console.log('sending notification with id')
     return browser.notifications.create(id, {
         type: 'basic',
         ...data,
         iconUrl: browser.runtime.getURL('icons/icon.png')
-    }).catch(console.error)
+    })
 }
 
 async function webFetch(url: string) {
@@ -138,6 +138,8 @@ async function fetchVideoInfo(bvid: string, p: number): Promise<VideoInfo>{
     }
 }
 
+const updateManager = new UpdateManager(webFetch)
+
 CommandManager.addCommand('notify', (data, sender) => sendNotify(data))
 CommandManager.addCommand('notify-id', (data, sender) => sendNotifyId(data.id, data.data))
 CommandManager.addCommand('fetch', (data, sender) => webFetch(data.url))
@@ -145,6 +147,15 @@ CommandManager.addCommand('get-local-data', (data, sender) => browser.storage.lo
 CommandManager.addCommand('send-danmu', (data, sender) => sendDanmu(data))
 CommandManager.addCommand('fetch-user', (data, sender) => fetchUser())
 CommandManager.addCommand('fetch-video', (data, sender) => fetchVideoInfo(data.bvid, data.p))
+
+CommandManager.addCommand('check-update', async (data, sender) => {
+    const msg = await updateManager.checkUpdate(true)
+    if (msg?.buttons) {
+        await sendNotifyId('bdi:update', msg)
+    }else if (msg){
+        await sendNotify(msg)
+    }
+})
 
 browser.runtime.onMessage.addListener(CommandManager.handleMessage)
 
@@ -164,3 +175,39 @@ browser.runtime.onInstalled.addListener(async data => {
     await sendNotifyId('bdi:updated', msg)
 })
 
+
+
+//火狐可以自动更新
+if (!isFirefox){
+    updateManager.checkUpdate()
+}
+
+function logLink(version: string){
+    return `https://github.com/eric2788/bilibili-danmaku-inserter/releases/tag/${version}`
+}
+
+browser.notifications.onButtonClicked.addListener(async (nid, bi) => {
+    const latest = updateManager.latestVersion
+    if (nid === 'bdi:update') {
+        if (latest === undefined) {
+            await sendNotify({
+                title: '索取新版本信息失败。',
+                message: '请稍后再尝试。'
+            })
+            return
+        }
+        switch (bi) {
+            case 0:
+                //下载更新
+                await browser.tabs.create({ url: latest.update_link })
+                break;
+            case 1:
+                //查看更新日志
+                await browser.tabs.create({ url: logLink(latest.version) })
+                break;
+        }
+    } else if (nid === 'bjf:updated'){
+        await browser.tabs.create({url: logLink(currentVersion)})
+    }
+    
+})

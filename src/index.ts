@@ -1,6 +1,6 @@
 import { hexColorToDecmial, loadingPattern, throwError } from "./utils/misc";
 import $ from 'jquery';
-import { fetchUser, fetchVideo, sendNotify } from "./utils/messaging";
+import { checkUpdate, fetchUser, fetchVideo, sendNotify } from "./utils/messaging";
 import $_ from "./utils/jquery-extend";
 import { StorageSettings } from "./types/StorageSettings";
 import ParseManager from './managers/ParseManager'
@@ -46,6 +46,8 @@ loadingPattern({
         return `弹幕发送者: ${username} (Lv${lvl})`
     }
 })
+
+$(`#check-update`).on('click', async e => await checkUpdate())
 
 $(`#danmu-insert-btn`).on('click', async e => {
     $_.toggleShow(`#danmu-insert-loading`, true)

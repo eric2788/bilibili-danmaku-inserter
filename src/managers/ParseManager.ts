@@ -24,7 +24,7 @@ function addParser(parser: JimakuLoggableParser){
             <div class="form-group collapse" id="${token}">
                 <div class="card-body">
                 <div class="row">
-                        <small><a href="${parser.link}">【${parser.name}】的相关网址</a></small>
+                        <small><a href="${parser.link}" target="_blank" alt="${parser.name}">【${parser.name}】的相关网址</a></small>
                         <div class="col-sm">
                             <div class="mb-3">
                                 <label for="${file}" class="form-label">导入档案</label>
