@@ -9,16 +9,13 @@ export class BilibilJimakuFilterParser extends JimakuLoggableParser{
 
     link: string = 'https://github.com/eric2788/bilibili-jimaku-filter'
 
-    private logRegex: RegExp = /\[(?<time>[\d+:]+)\]\s(?<msg>.*)/g
-
     async parse(txt: String): Promise<Danmu[]> {
         const logs = txt.split('\n')
         const danmus: Danmu[] = []
         let line = 1;
         for (const log of logs){
             try {
-                const [, time, msg] = this.logRegex.exec(log)
-
+                const [, time, msg] = /\[(?<time>[\d+:]+)\]\s(?<msg>.*)/g.exec(log) ?? []
                 if (!time){
                     throwError('时间戳记获取失败。')
                 }
@@ -31,9 +28,9 @@ export class BilibilJimakuFilterParser extends JimakuLoggableParser{
                 
                 danmus.push({timestamp, msg})
 
-                this.info(line, `文字转换成功[时间=${timestamp},讯息=${msg}]`)
+                this.info(`文字转换成功: [时间=${timestamp},讯息=${msg}]`, line)
             }catch(err){
-                this.error(line, err)
+                this.error(err, line)
             }finally{
                 line++
             }

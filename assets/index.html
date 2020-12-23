@@ -37,9 +37,11 @@
     </nav>
     <div class="container">
         <div id="danmaku-insert">
+            <h3>同传字幕转换弹幕</h3>
             <div class="card">
                 <div class="card-header">
                     把同传弹幕记录插入生肉视频
+                    <a href="https://github.com/eric2788/bilibili-danmaku-inserter/wiki/%E4%BD%BF%E7%94%A8%E6%95%99%E5%AD%B8" target="_blank" style="float: right;" class="btn btn-outline-info btn-sm">使用教学</a>
                 </div>
                 <div class="card-body">
                     <div class="container">
@@ -49,7 +51,7 @@
                                 <div class="input-group mb-3">
                                     <span class="input-group-text rounded-0">https://www.bilibili.com/video/</span>
                                     <input type="text" class="form-control" id="bvid" aria-describedby="bvid" placeholder="视频bvid">
-                                    <span class="input-group-text rounded-0">@</span>
+                                    <span class="input-group-text rounded-0">?p=</span>
                                     <input type="number" class="form-control" placeholder="分P" id="page">
                                 </div>
                                 <button class="btn btn-primary" id="fetch-video-btn">
@@ -84,38 +86,49 @@
                                         <label for="danmu-size">弹幕大小</label>
                                         <select class="form-select form-select-sm" id="danmu-size">
                                             <option value="small">小</option>
-                                            <option value="normal">中</option>
+                                            <option value="normal" selected>中</option>
                                             <option value="large">大</option>
                                         </select>
                                     </div>
                                     <div class="col-sm">
                                         <label for="danmu-position">弹幕位置</label>
                                         <select class="form-select form-select-sm" id="danmu-position">
-                                            <option value="normal">滚动</option>
+                                            <option value="normal" selected>滚动</option>
                                             <option value="top">置顶</option>
                                             <option value="bottom">置底</option>
                                         </select>
                                     </div>
                                     <div class="col-sm">
                                         <span for="danmu-color">颜色选择</span>
-                                        <input type="color" class="form-control form-control-color form-control-sm" id="danmu-color" title="选择颜色">
+                                        <input type="color" class="form-control form-control-color form-control-sm" id="danmu-color" title="选择颜色" value="#FFFFFF">
                                     </div>
                                 </div>
                                 <div class="form-check form-switch">
                                     <input class="form-check-input" type="checkbox" id="danmu-sub" disabled>
-                                    <label class="form-check-label" for="danmu-sub">启用字幕(试验阶段)</label>
+                                    <label class="form-check-label" for="danmu-sub">启用字幕(暂不可用)</label>
                                 </div>
+                                <label for="interval-range" class="form-label">发送请求间隔</label>
+                                <div class="input-group mb-3">
+                                    <input class="form-control" type="number" id="interval-range" min="1000" max="10000" value="5000" aria-describedby="interval-range-help">
+                                    <span class="input-group-text" id="interval-range-help">毫秒</span>
+                                  </div>
+                               
                                 <div class="mb-3">
                                     <label for="danmaku-insert-file" class="form-label">导入JSON档案</label>
                                     <input class="form-control" type="file" id="danmaku-insert-file" accept="${parser.acceptedFormat.join(', ')}">
                                 </div>
-                                <button class="btn btn-primary" id="danmu-insert-btn">
+                                <button class="btn btn-primary" id="danmu-insert-btn" disabled>
                                     开始插入
                                     <div id="danmu-insert-loading" class="spinner-border spinner-border-sm" role="status" style="display: none;"></div>
                                 </button>
+                                <button class="btn btn-success" id="user-fetch-btn" disabled>
+                                    获取弹幕发送者资讯
+                                    <div id="user-fetch-loading" class="spinner-border spinner-border-sm" role="status" style="display: none;"></div>
+                                </button>
+                                <small id="user-fetch-result"></small>
                             </div>
                             <div class="col-sm">
-                                <div class="border border-secondary logger-box">
+                                <div class="border border-secondary logger-box" id="main-output">
                                     <p class="log">(输出日志: 此处将进行日志输出)</p>
                                 </div>
                                 <button class="btn btn-danger btn-sm" style="float: right" id="clear-log-btn">清空日志</button>
@@ -125,8 +138,10 @@
                 </div>
             </div>
         </div>
-    
-        <div id="danmaku-convert"></div>
+        <hr>
+        <h3>字幕记录转换</h3>
+        <div id="danmaku-convert">
+        </div>
     </div>
 </body>
 <style>
@@ -140,4 +155,4 @@
     }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
-<script src="webpage.js"></script>
+<script src="index.js"></script>

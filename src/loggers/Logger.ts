@@ -1,11 +1,11 @@
 export interface Logger {
     
-    name: String
+    name: string
 
-    info(msg: String): void
+    info(msg: string): void
 
     error(e: Error): void
 
-    warn(msg: String): void
+    warn(msg: string): void
     
 }

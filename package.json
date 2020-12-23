@@ -24,7 +24,6 @@
   "homepage": "https://github.com/eric2788/firefox-ext-template#readme",
   "dependencies": {
     "@types/jquery": "^3.5.5",
-    "axios": "^0.21.1",
     "jquery": "^3.5.1",
     "querystring": "^0.2.0"
   },

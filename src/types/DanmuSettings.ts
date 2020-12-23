@@ -1,8 +1,10 @@
 export interface DanmuSettings {
     color: number, 
-    position?: 'normal' | 'top' | 'botom', 
-    fontSize?: 'normal' | 'large' | 'small'
-    msg: string,
-    nano: number,
+    position?: Position, 
+    fontSize?: Size,
     isSub?: boolean
 }
+
+export type Size = 'normal' | 'large' | 'small'
+
+export type Position = 'normal' | 'top' | 'botom'

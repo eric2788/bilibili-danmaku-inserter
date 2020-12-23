@@ -1,15 +1,17 @@
 import { browser } from "webextension-polyfill-ts";
+import { DanmuSendInfo } from "../types/DanmuSendInfo";
 import { DanmuSettings } from "../types/DanmuSettings";
 import { NotifyMessage } from "../types/NotifyMessage";
 import { VideoInfo } from "../types/VideoInfo";
 
 export type DanmuPayload = {
     video: VideoInfo,
-    data: DanmuSettings
+    style: DanmuSettings,
+    interval: number
 }
 
-export async function fetchUser(bvid: string): Promise<string>{
-    return sendData('fetch-user', {bvid})
+export async function fetchUser(): Promise<{username: string, lvl: number}>{
+    return sendData('fetch-user', {})
 }
 
 export async function fetchVideo(bvid: string, p: number): Promise<VideoInfo>{
@@ -28,7 +30,7 @@ export async function webFetch(url: string){
     return sendData('fetch', {url})
 }
 
-export async function sendDanmu(data: DanmuPayload){
+export async function sendDanmu(data: DanmuSendInfo){
     return sendData('send-danmu', data)
 }
 

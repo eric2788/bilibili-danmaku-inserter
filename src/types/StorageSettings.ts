@@ -5,6 +5,7 @@ import { VideoInfo } from "./VideoInfo";
 export interface StorageSettings {
 
     currentVideo?: VideoInfo, 
-    danmuStyle?: DanmuSettings
+    danmuStyle?: DanmuSettings,
+    interval?: number
 
 }

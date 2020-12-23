@@ -6,6 +6,12 @@ function input(id: string){
     return (ele as HTMLInputElement)
 }
 
+function select(id: string){
+    const ele = $(id)[0]
+    if(!(ele instanceof HTMLSelectElement)) throw new Error(ele+' not HTMLInputElement')
+    return (ele as HTMLSelectElement)
+}
+
 function toggleShow(id: string, show: boolean | undefined = undefined){
     const ele = $(id)
     const display = !show ?? ele.css('display') !== 'none'
@@ -25,5 +31,6 @@ function toggleDisable(id: string, disabled: boolean | undefined = undefined){
 export default {
     input,
     toggleShow,
-    toggleDisable
+    toggleDisable,
+    select
 }

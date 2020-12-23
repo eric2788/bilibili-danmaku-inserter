@@ -9,7 +9,7 @@ module.exports = {
 	entry: {
         index: './src/index.ts',
         background: './src/background.ts',
-        webpage: './src/webpage.ts'
+        //webpage: './src/webpage.ts'
     },
     module: {
         rules: [

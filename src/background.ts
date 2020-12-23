@@ -1,21 +1,16 @@
-import axios from 'axios'
 import { browser } from 'webextension-polyfill-ts'
 import CommandManager from './managers/CommandManager'
 import qs from 'querystring'
-import { DanmuSettings } from './types/DanmuSettings'
 import { VideoInfo } from './types/VideoInfo'
 import { NotifyMessage } from './types/NotifyMessage'
+import { DanmuSendInfo } from './types/DanmuSendInfo'
+import { ajax } from 'jquery'
 
 console.log('background is working...')
 
-sendNotify({
-    title: 'hello',
-    message: 'hello world!!!'
-}).then(() => console.log('hello world!!'))
-
 browser.browserAction.onClicked.addListener((tab, clickData) => {
     browser.tabs.create({
-        url: browser.runtime.getURL('webpage.html')
+        url: browser.runtime.getURL('index.html')
     })
 })
 
@@ -38,41 +33,32 @@ async function webFetch(url: string) {
     return json
 }
 
-function toPayload(video: VideoInfo, data: DanmuSettings){
+const posConvert: {[key: string]: number} = {
+    'normal': 1,
+    'top': 5,
+    'bottom': 4
+}
+
+const sizeConvert: {[key: string]: number} = {
+    'normal': 25,
+    'large': 36,
+    'small': 18
+}
+
+function toPayload(data: DanmuSendInfo){
     if (!csrfToken) throw new Error('未知 CSRFToken，请确保已经取得用户讯息。')
-    let mode;
-    switch(data.position ?? 'bottom'){
-        case "normal":
-            mode = 1;
-            break;
-        case "top":
-            mode = 5;
-            break;
-        case "botom":
-            mode = 4;
-            break;    
-    }
-    const msg = encodeURI(data.msg)
-    let size;
-    switch(data.fontSize ?? 'normal'){
-        case "normal":
-            size = 25;
-            break;
-        case "large":
-            size = 36;
-            break;
-        case "small":
-            size = 18;
-            break;
-    }
+    const style = data.payload.style
+    const video = data.payload.video
+    let mode = posConvert[style.position] ?? 1
+    let size = sizeConvert[style.fontSize] ?? 25
     const pool = 0 //data.isSub ? 1 : 0
     return {
         type: 1,
         oid: video.oid,
-        msg,
+        msg: data.msg,
         bvid: video.bid,
         progress: data.nano,
-        color: data.color,
+        color: style.color,
         fontsize: size,
         pool,
         mode,
@@ -82,31 +68,41 @@ function toPayload(video: VideoInfo, data: DanmuSettings){
     }
 }
 
-async function sendDanmu({video, data}: {video: VideoInfo, data: DanmuSettings}){
-    return await axios.post('https://api.bilibili.com/x/v2/dm/post', qs.stringify(toPayload(video, data)), {
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        }
-    })
+async function sendDanmu(data: DanmuSendInfo){
+    const api = 'https://api.bilibili.com/x/v2/dm/post'
+    const payload = qs.stringify(toPayload(data))
+    console.debug(`prepare to send danmu: ${data.msg}`)
+    console.debug(`payload: ${payload}`)
+    return await ajax({
+        type: "POST",
+        url: api,
+        data: payload,
+        dataType: 'json'
+    });
 }
 
 
-async function fetchUser(){
+async function fetchUser(): Promise<{username: string, lvl: number}>{
     const tab = await browser.tabs.create({
         url: 'https://space.bilibili.com',
         active: false,
     })
-    const result = await browser.tabs.executeScript(tab.id, {
-        code: `
-           /bili_jct=(.+?)[;$]/.exec(document.cookie)?.pop()
-           document.getElementById('h-name').innerText
-        `
+    const csrfResult = await browser.tabs.executeScript(tab.id, {
+        code: `/bili_jct=(.+?)[;$]/.exec(document.cookie)?.pop()`
     })
-    console.log(result)
-    const [ token, username ] = result
-    if (!token) throw new Error('尚未登入!')
+    const usernameResult = await browser.tabs.executeScript(tab.id, {
+        code: `document.getElementById('h-name')?.innerText`
+    })
+    const lvlResult = await browser.tabs.executeScript(tab.id, {
+        code: `parseInt(document.getElementsByClassName('h-level')[0]?.getAttribute('lvl'))`
+    })
+    await browser.tabs.remove(tab.id)
+    const result = [...csrfResult, ...usernameResult, ...lvlResult]
+    const [ token, username, lvl ] = result
+    if (!token || !username || !lvl) throw new Error('尚未登入!')
+    console.log(`csrfToken: ${token}, username: ${username}. level: ${lvl}`)
     csrfToken = token
-    return username
+    return {username, lvl}
 }
 
 
@@ -115,7 +111,9 @@ async function fetchVideoInfo(bvid: string, p: number): Promise<VideoInfo>{
     if (!p) throw new Error('请输入分P数')
     const res = await webFetch(`https://api.bilibili.com/x/player/pagelist?bvid=${bvid}&jsonp=jsonp`)
     const data = res?.data
-    if (!data) throw new Error('视频资讯请求失败')
+    if (!data) {
+        throw new Error(`视频获取失败: ${res.message}`)
+    }
     if (p > data.length) {
         throw new Error('你所输入的分P数超出视频本身P数范围')
     }
@@ -124,7 +122,7 @@ async function fetchVideoInfo(bvid: string, p: number): Promise<VideoInfo>{
         oid: cid,
         page,
         title: part,
-        duration,
+        duration: duration - 1,
         bid: bvid
     }
 }

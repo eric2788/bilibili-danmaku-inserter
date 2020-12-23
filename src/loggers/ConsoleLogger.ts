@@ -2,19 +2,25 @@ import { Logger } from "./Logger";
 
 export class ConsoleLogger implements Logger {
 
-    name: String;
+    name: string;
+
+    private console: Console
+
+    constructor(console: Console){
+        this.console = console
+    }
 
     info(msg: String): void {
-        console.info(`${this.name ?? ''}${msg}`)
+        this.console.info(`${this.name ?? ''}${msg}`)
     }
 
     error(e: Error): void {
-        console.error(`${this.name}${e.message}: `)
-        console.error(e)
+        this.console.error(`${this.name ?? ''}${e.message}: `)
+        this.console.error(e)
     }
 
     warn(msg: String): void {
-        console.warn(`${this.name ?? ''}${msg}`)
+        this.console.warn(`${this.name ?? ''}${msg}`)
     }
 
 }
