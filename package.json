@@ -1,7 +1,7 @@
 {
-  "name": "firefox-extension-template",
-  "version": "0.1.1",
-  "description": "firefox extension template",
+  "name": "bilibili-danmaku-inserter",
+  "version": "0.1.2",
+  "description": "bilibili-danmaku-inserter by ericlam",
   "main": "index.js",
   "scripts": {
     "clean": "rmdir /S /Q dist",
@@ -10,18 +10,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/eric2788/firefox-ext-template.git"
+    "url": "git+https://github.com/eric2788/bilibili-danmaku-inserter.git"
   },
   "keywords": [
     "firefox",
-    "extension"
+    "extension",
+    "bilibili"
   ],
   "author": "eric lam",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/eric2788/firefox-ext-template/issues"
+    "url": "https://github.com/eric2788/bilibili-danmaku-inserter/issues"
   },
-  "homepage": "https://github.com/eric2788/firefox-ext-template#readme",
+  "homepage": "https://github.com/eric2788/bilibili-danmaku-inserter#readme",
   "dependencies": {
     "@types/jquery": "^3.5.5",
     "jquery": "^3.5.1",

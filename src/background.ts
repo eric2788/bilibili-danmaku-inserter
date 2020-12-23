@@ -206,7 +206,7 @@ browser.notifications.onButtonClicked.addListener(async (nid, bi) => {
                 await browser.tabs.create({ url: logLink(latest.version) })
                 break;
         }
-    } else if (nid === 'bjf:updated'){
+    } else if (nid === 'bdi:updated'){
         await browser.tabs.create({url: logLink(currentVersion)})
     }
     
