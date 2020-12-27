@@ -2,7 +2,7 @@
 
 ## 把同传弹幕插入生肉视频 
 
-### [使用教学](https://github.com/eric2788/bilibili-danmaku-inserter/wiki/%E4%BD%BF%E7%94%A8%E6%95%99%E5%AD%B8)
+### [使用教学](https://github.com/eric2788/bilibili-danmaku-inserter/wiki)
 
 
 

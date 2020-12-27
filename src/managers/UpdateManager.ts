@@ -1,6 +1,6 @@
 import { browser } from "webextension-polyfill-ts"
 import { NotifyMessage } from "../types/NotifyMessage"
-import { VersionInfo } from "../types/VersionInfo"
+import { VersionInfo } from "../types/infos/VersionInfo"
 import { canUseButton, newerThan } from "../utils/misc"
 
 export const extName = browser.runtime.getManifest().name

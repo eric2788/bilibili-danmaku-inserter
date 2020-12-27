@@ -1,20 +1,23 @@
-import { Danmu } from "../types/Danmu";
-import { Loggable } from "../loggers/Loggable";
-import { Runnable } from "../types/Runnable";
+import { Danmu } from "../types/danmu/Danmu";
 import { DanmuPayload, sendDanmu } from "../utils/messaging";
 import { throwError } from "../utils/misc";
-import { DanmuSendInfo } from "../types/DanmuSendInfo";
+import { BilibiliInserterSettings } from "../types/settings/BilibiliInserterSettings";
+import { MainStreamRunner } from "../types/MainStreamRunner";
+import { keys } from "ts-transformer-keys";
 
-export class BilibiliDanmakuInserterRunner extends Loggable implements Runnable {
+export class DanmakuInserterRunner extends MainStreamRunner<any, BilibiliInserterSettings> {
     
-    private danmus: Danmu[]
+    protected isInstance(sat: Satisfiable): boolean {
+        return keys<BilibiliInserterSettings>().every(s => s in sat)
+    }
+    
     private payload: DanmuPayload
     private _terminate: boolean = false
 
-    constructor(danmus: Danmu[], payload: DanmuPayload){
-        super();
-        this.danmus = danmus;
-        this.payload = payload;
+    
+    assignSetting(danmus: Danmu[], delay: number, setting: Satisfiable){
+        super.assignSetting(danmus, delay, setting)
+        this.payload = { style: this.setting.danmuStyle, video: this.setting.currentVideo, interval: this.setting.interval};
     }
 
     terminate(): void {
@@ -35,6 +38,7 @@ export class BilibiliDanmakuInserterRunner extends Loggable implements Runnable 
     }
 
     async run(): Promise<any> {
+        console.log(this.danmus)
         const maxTimeStamp = this.payload.video.duration * 1000
         let line = 1;
         let interval = this.payload.interval
@@ -44,8 +48,11 @@ export class BilibiliDanmakuInserterRunner extends Loggable implements Runnable 
 
                 if (this._terminate){
                     this.info(`运行已被手动中止。`, line)
+                    this._terminate = false
                     return;
                 }
+
+                danmu.timestamp = Math.max(0, danmu.timestamp + this.delay) // avoid < 0
 
                 if(danmu.timestamp > maxTimeStamp){
                     throwError('时间戳记超出视频总时长')
@@ -58,8 +65,6 @@ export class BilibiliDanmakuInserterRunner extends Loggable implements Runnable 
                     nano: danmu.timestamp,
                     payload: this.payload
                 })
-
-                console.debug(res)
 
                 if (!res?.data){
                     if (res?.code !== 36703){

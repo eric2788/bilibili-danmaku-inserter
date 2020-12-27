@@ -1,4 +1,4 @@
-import { DanmuPayload } from "../utils/messaging";
+import { DanmuPayload } from "../../utils/messaging";
 
 export interface DanmuSendInfo {
     msg: string, 

@@ -1,6 +1,9 @@
-export interface Runnable {
+import { BilibiliCommunityCaption } from "./BilibiliCommunityCaption";
+
+export interface Runnable<T> {
     
-    run(): Promise<any>
+    run(): Promise<T>
     
     terminate(): void
+
 }

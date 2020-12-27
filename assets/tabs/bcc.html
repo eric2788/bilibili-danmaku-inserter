@@ -1,0 +1,22 @@
+<div class="row mb-3">
+    <div class="col-sm">
+        <label for="danmu-color" class="form-label">字幕颜色选择</label>
+        <input type="color" class="form-control form-control-color" id="bcc-color" title="选择颜色" value="#FFFFFF" disabled>
+    </div>
+    <div class="col-sm">
+        <label for="danmu-color" class="form-label">背景颜色选择</label>
+        <input type="color" class="form-control form-control-color" id="bcc-bg-color" title="选择颜色" value="#9C27B0" disabled>
+    </div>
+    <div class="col-sm">
+        <label for="bcc-font-size" class="form-label">字幕大小</label>
+        <input class="form-control" type="number" id="bcc-font-size" min="0.1" max="1" value="0.5" step="0.1" disabled>
+    </div>
+    <div class="col-sm">
+        <label for="bcc-bg-opacity" class="form-label">背景透明度</label>
+        <input class="form-control" type="number" id="bcc-bg-opacity" min="0" max="1" value="0.4" step="0.1" disabled>
+    </div>
+</div>
+<button class="btn btn-primary" id="bcc-btn">
+    开始转换
+    <div id="bcc-loading" class="spinner-border spinner-border-sm" role="status" style="display: none;"></div>
+</button>

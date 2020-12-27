@@ -1,4 +1,4 @@
-import { Danmu } from "../types/Danmu"
+import { Danmu } from "../types/danmu/Danmu"
 import $ from 'jquery'
 import $_ from './jquery-extend'
 
@@ -22,6 +22,10 @@ export function timeToNanoSecs(time: string): number{
     return nano * 1000
 }
 
+export function nameOf(obj: any): string{
+    return obj.constructor.name
+}
+
 export function generateToken(): string{
     return 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
         var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
@@ -30,7 +34,13 @@ export function generateToken(): string{
 }
 
 export async function readAsDanmus(file: File): Promise<Danmu[]> {
-    return await readAsJson(file) as Danmu[]
+    const json = await readAsJson(file)
+    if (json[0]?.timestamp && json[0]?.msg){
+        return json as Array<Danmu>
+    }else{
+        throwError('无法转换该档案为弹幕')
+    }
+    
 }
 
 export async function readAsText(file: File): Promise<string> {
@@ -59,7 +69,13 @@ export function loadingPattern(data: {
     run: () => Promise<string>
 }){
     const {btn, loading, result, run} = data
-    $(`#${btn}`).on('click', async e => {
+    const btnEle = $(`#${btn}`)
+    btnEle.on('click', async e => {
+        const form = btnEle.parent('form')
+        if (form.length > 0){
+            if(!(form[0] as HTMLFormElement).checkValidity()) return
+        }
+        e.preventDefault()
         const resultEle = $(`#${result}`)
         $_.toggleShow(`#${loading}`, true)
         $_.toggleDisable(`#${btn}`, true)

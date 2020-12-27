@@ -2,6 +2,7 @@ const SizePlugin = require('size-plugin')
 const path = require('path')
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
+const keysTransformer = require('ts-transformer-keys/transformer').default;
 
 module.exports = {
 	//devtool: 'source-map',
@@ -15,8 +16,15 @@ module.exports = {
         rules: [
           {
             test: /\.tsx?$/,
-            use: 'ts-loader',
+            loader: 'ts-loader',
             exclude: /node_modules/,
+            options: {
+                getCustomTransformers: program => ({
+                    before: [
+                        keysTransformer(program)
+                    ]
+                })
+              }
           },
         ],
     },

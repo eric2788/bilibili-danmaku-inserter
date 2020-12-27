@@ -1,27 +1,40 @@
 import { Loggable } from "../loggers/Loggable";
 import { Runnable } from "../types/Runnable";
-import { StorageSettings } from "../types/StorageSettings";
-import { readAsDanmus, throwError } from "../utils/misc";
-import { BilibiliDanmakuInserterRunner } from "./BilibiliDanmakuInserterParser";
+import { nameOf, readAsDanmus, throwError } from "../utils/misc";
+import { GlobalSettings } from "../types/settings/GlobalSettings";
+import { MainStreamRunner } from "../types/MainStreamRunner";
 
 
-async function getRunner(file: File, setting: StorageSettings): Promise<Loggable & Runnable>{
-    const danmus = await readAsDanmus(file)
-    const {currentVideo, danmuStyle, interval} = setting
-    if (!currentVideo){
-        throwError('没有视频资讯')
+async function getRunner<T>(key: string, globalSetting: GlobalSettings, setting: Satisfiable): Promise<Loggable & Runnable<T>>{
+    if (!globalSetting.file){
+        throwError('无法解析档案')
     }
-    if (!danmuStyle){
-        throwError('没有弹幕设定')
+    if (isNaN(globalSetting.delay)){
+        throwError('发送时间调整数值无效')
     }
-    if (setting.interval < 1000 || setting.interval > 100000){
-        throwError('发送请求间隔超出范围 (1000 ~ 10000) 毫秒')
+    const danmus = await readAsDanmus(globalSetting.file)
+    const errorMessage = setting.isSatisfied()
+    if (errorMessage){
+        throwError(errorMessage)
     }
-    const payload = { video: currentVideo, style: danmuStyle, interval: interval ?? 5000 }
-    return new BilibiliDanmakuInserterRunner(danmus, payload)
+    console.log(`getting runner: ${key}`)
+    const runner = map[key]?.call(this)
+    if (runner == null || !runner ) throwError(`Cannot get the runner: ${key}`)
+    runner.assignSetting(danmus, globalSetting.delay, setting)
+    return runner
+}
+
+
+const map: { [key: string]: () => MainStreamRunner<any, any> } = {}
+
+function registerRunner(runner: () => MainStreamRunner<any, any>){
+    const key = nameOf(runner.call(this))
+    console.log(`registered runner: ${key}`)
+    map[key] = runner
 }
 
 
 export default {
-    getRunner
+    getRunner,
+    registerRunner
 }

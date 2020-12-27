@@ -1,8 +1,8 @@
 import { browser } from "webextension-polyfill-ts";
-import { DanmuSendInfo } from "../types/DanmuSendInfo";
-import { DanmuSettings } from "../types/DanmuSettings";
+import { DanmuSendInfo } from "../types/danmu/DanmuSendInfo";
+import { DanmuSettings } from "../types/danmu/DanmuSettings";
 import { NotifyMessage } from "../types/NotifyMessage";
-import { VideoInfo } from "../types/VideoInfo";
+import { VideoInfo } from "../types/infos/VideoInfo";
 
 export type DanmuPayload = {
     video: VideoInfo,
@@ -12,6 +12,10 @@ export type DanmuPayload = {
 
 export async function checkUpdate(): Promise<void> {
     return sendData('check-update', {})
+}
+
+export async function loadHtml(locate: string): Promise<string>{
+    return sendData('load-html', {locate})
 }
 
 export async function fetchUser(): Promise<{username: string, lvl: number}>{

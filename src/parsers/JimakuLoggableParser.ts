@@ -1,4 +1,4 @@
-import { Danmu } from "../types/Danmu";
+import { Danmu } from "../types/danmu/Danmu";
 import { Loggable } from "../loggers/Loggable";
 import { JimakuParser } from "./JimakuParser";
 

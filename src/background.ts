@@ -1,9 +1,9 @@
 import { browser } from 'webextension-polyfill-ts'
 import CommandManager from './managers/CommandManager'
 import qs from 'querystring'
-import { VideoInfo } from './types/VideoInfo'
+import { VideoInfo } from './types/infos/VideoInfo'
 import { NotifyMessage } from './types/NotifyMessage'
-import { DanmuSendInfo } from './types/DanmuSendInfo'
+import { DanmuSendInfo } from './types/danmu/DanmuSendInfo'
 import { ajax } from 'jquery'
 import { canUseButton, isFirefox } from './utils/misc'
 import UpdateManager, { currentVersion, extName } from './managers/UpdateManager'
@@ -116,6 +116,12 @@ async function fetchUser(): Promise<{username: string, lvl: number}>{
     return {username, lvl}
 }
 
+async function loadHtml(locate: string): Promise<string>{
+    const res = await fetch(browser.runtime.getURL(locate))
+    if (!res.ok) if (!res.ok) throw new Error(`${res.statusText}(${res.status})`)
+    return await res.text()
+}
+
 
 async function fetchVideoInfo(bvid: string, p: number): Promise<VideoInfo>{
     if (!bvid) throw new Error('请输入视频bid')
@@ -147,6 +153,7 @@ CommandManager.addCommand('get-local-data', (data, sender) => browser.storage.lo
 CommandManager.addCommand('send-danmu', (data, sender) => sendDanmu(data))
 CommandManager.addCommand('fetch-user', (data, sender) => fetchUser())
 CommandManager.addCommand('fetch-video', (data, sender) => fetchVideoInfo(data.bvid, data.p))
+CommandManager.addCommand('load-html', (data, sender) => loadHtml(data.locate))
 
 CommandManager.addCommand('check-update', async (data, sender) => {
     const msg = await updateManager.checkUpdate(true)
