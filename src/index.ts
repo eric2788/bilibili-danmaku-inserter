@@ -199,7 +199,7 @@ function runnerLoadingPattern<T extends Object>(data: {
             const sat = settings()
             const runner = await DanmakuManager.getRunner<T>(key, globalSettings, sat)
             window.onbeforeunload = function() {
-                return "inserter running";
+                return false;
             };
             if (stopBtn){
                 $(`#${tab} #${stopBtn}`).one('click', e => {

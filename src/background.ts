@@ -10,10 +10,20 @@ import UpdateManager, { currentVersion, extName } from './managers/UpdateManager
 
 console.log('background is working...')
 
-browser.browserAction.onClicked.addListener((tab, clickData) => {
-    browser.tabs.create({
-        url: browser.runtime.getURL('index.html')
-    })
+browser.browserAction.onClicked.addListener(async (tab, clickData) => {
+    try {
+        const tab = await browser.tabs.create({
+            url: browser.runtime.getURL('index.html')
+        })
+        await browser.tabs.update(tab.id, {
+            autoDiscardable: false // 防止浏览器自动刷新tab
+        })
+    }catch(err){
+        await sendNotify({
+            title: '无法打开界面',
+            message: err?.message ?? err
+        })
+    }
 })
 
 
