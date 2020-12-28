@@ -5,6 +5,7 @@ export interface BilibiliInserterSettings extends Satisfiable{
 
     currentVideo: VideoInfo, 
     danmuStyle: DanmuSettings,
-    interval: number
+    interval: number,
+    resendInterval: number
 
 }

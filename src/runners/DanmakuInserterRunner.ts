@@ -42,9 +42,10 @@ export class DanmakuInserterRunner extends MainStreamRunner<any, BilibiliInserte
         const maxTimeStamp = this.payload.video.duration * 1000
         let line = 1;
         let interval = this.payload.interval
+        let retry = 1;
         while (this.danmus.length > 0){
             try {
-                const danmu = this.danmus.shift()
+                const danmu = this.danmus[0]
 
                 if (this._terminate){
                     this.info(`运行已被手动中止。`, line)
@@ -70,15 +71,19 @@ export class DanmakuInserterRunner extends MainStreamRunner<any, BilibiliInserte
                     if (res?.code !== 36703){
                         throwError(res?.message ?? '弹幕发送失败')
                     }else{
-                        interval += 10000
+                        interval = this.setting.resendInterval * retry
                         this.warn(`发送频率过快, ${(interval / 1000).toFixed(1)}秒后重试`, line)
-                        this.danmus.push(danmu)
+                        retry++
+                        continue
                     }
                 }else{
                     this.info(`成功插入弹幕。[讯息=${danmu.msg}, 时间戳记=${danmu.timestamp}]`, line)
                     interval = this.payload.interval
+                    retry = 1
                 }
+                this.danmus.shift()
             }catch(err){
+                this.danmus.shift()
                 this.error(err, line)
             }finally{
                 line++

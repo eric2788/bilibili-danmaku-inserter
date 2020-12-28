@@ -136,12 +136,22 @@
                                                 <input class="form-check-input" type="checkbox" id="danmu-sub" disabled>
                                                 <label class="form-check-label" for="danmu-sub">启用字幕(暂不可用)</label>
                                             </div>
-                                            <label for="interval-range" class="form-label">发送请求间隔(建議設置發送請求間隔為5000毫秒)</label>
-                                            <div class="input-group mb-3">
-                                                <input class="form-control" type="number" id="interval-range" min="1000" max="10000" value="5000" aria-describedby="interval-range-help" required>
-                                                <span class="input-group-text" id="interval-range-help">毫秒</span>
+                                            <div class="row">
+                                                <div class="col-sm">
+                                                    <label for="interval-range" class="form-label">发送请求间隔</label>
+                                                    <div class="input-group mb-3">
+                                                        <input class="form-control" type="number" id="interval-range" min="5000" value="20000" aria-describedby="interval-range-help" required>
+                                                        <span class="input-group-text" id="interval-range-help">毫秒</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm">
+                                                    <label for="resend-interval" class="form-label">发送频率过快时重试间隔</label>
+                                                    <div class="input-group mb-3">
+                                                        <input class="form-control" type="number" id="resend-interval" min="1000" value="60000" aria-describedby="resend-interval-help" required>
+                                                        <span class="input-group-text" id="resend-interval-help">毫秒</span>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        
                                             <button class="btn btn-primary" id="danmu-insert-btn" disabled>
                                                 开始插入
                                                 <div id="danmu-insert-loading" class="spinner-border spinner-border-sm" role="status" style="display: none;"></div>
