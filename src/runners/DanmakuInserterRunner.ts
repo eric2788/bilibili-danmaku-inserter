@@ -2,7 +2,7 @@ import { Danmu } from "../types/danmu/Danmu";
 import { DanmuPayload, sendDanmu } from "../utils/messaging";
 import { throwError } from "../utils/misc";
 import { BilibiliInserterSettings } from "../types/settings/BilibiliInserterSettings";
-import { MainStreamRunner } from "../types/MainStreamRunner";
+import { MainStreamRunner } from "../types/runner/MainStreamRunner";
 import { keys } from "ts-transformer-keys";
 
 export class DanmakuInserterRunner extends MainStreamRunner<any, BilibiliInserterSettings> {

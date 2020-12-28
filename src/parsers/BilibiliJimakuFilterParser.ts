@@ -1,6 +1,6 @@
 import { Danmu } from "../types/danmu/Danmu";
 import { JimakuLoggableParser } from "./JimakuLoggableParser";
-import { throwError, timeToNanoSecs } from "../utils/misc";
+import { sleep, throwError, timeToNanoSecs } from "../utils/misc";
 export class BilibilJimakuFilterParser extends JimakuLoggableParser{
 
     name: string = '同传字幕过滤插件转换'
@@ -33,6 +33,7 @@ export class BilibilJimakuFilterParser extends JimakuLoggableParser{
                 this.error(err, line)
             }finally{
                 line++
+                await sleep(1)
             }
         }
         return danmus;

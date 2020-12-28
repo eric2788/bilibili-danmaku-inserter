@@ -1,6 +1,6 @@
 {
   "name": "bilibili-danmaku-inserter",
-  "version": "0.2.3",
+  "version": "0.3.1",
   "description": "bilibili-danmaku-inserter by ericlam",
   "main": "index.js",
   "scripts": {

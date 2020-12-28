@@ -77,6 +77,7 @@ export function loadingPattern(data: {
         }
         e.preventDefault()
         const resultEle = $(`#${result}`)
+        resultEle[0].innerText = ''
         $_.toggleShow(`#${loading}`, true)
         $_.toggleDisable(`#${btn}`, true)
         try {

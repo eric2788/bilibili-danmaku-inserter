@@ -1,0 +1,47 @@
+<div class="row">
+    <div class="col-sm">
+        <label for="danmu-size" class="form-label">弹幕大小</label>
+        <select class="form-select form-select-sm" id="danmu-size" required>
+            <option value="small">小</option>
+            <option value="normal" selected>中</option>
+            <option value="large">大</option>
+        </select>
+    </div>
+    <div class="col-sm">
+        <label for="danmu-position" class="form-label">弹幕位置</label>
+        <select class="form-select form-select-sm" id="danmu-position" required>
+            <option value="normal" selected>滚动</option>
+            <option value="top">置顶</option>
+            <option value="bottom">置底</option>
+        </select>
+    </div>
+    <div class="col-sm">
+        <label for="danmu-color" class="form-label">颜色选择</label>
+        <input type="color" class="form-control form-control-color form-control-sm" id="danmu-color" title="选择颜色" value="#FFFFFF" required>
+    </div>
+</div>
+<div class="form-check form-switch">
+    <input class="form-check-input" type="checkbox" id="danmu-sub" disabled>
+    <label class="form-check-label" for="danmu-sub">启用字幕(暂不可用)</label>
+</div>
+<div class="row">
+    <div class="col-sm">
+        <label for="interval-range" class="form-label">发送请求间隔</label>
+        <div class="input-group mb-3">
+            <input class="form-control" type="number" id="interval-range" min="5000" value="20000" aria-describedby="interval-range-help" required>
+            <span class="input-group-text" id="interval-range-help">毫秒</span>
+        </div>
+    </div>
+    <div class="col-sm">
+        <label for="resend-interval" class="form-label">发送频率过快时重试间隔</label>
+        <div class="input-group mb-3">
+            <input class="form-control" type="number" id="resend-interval" min="1000" value="60000" aria-describedby="resend-interval-help" required>
+            <span class="input-group-text" id="resend-interval-help">毫秒</span>
+        </div>
+    </div>
+</div>
+<button class="btn btn-primary" id="danmu-insert-btn" disabled>
+    开始插入
+    <div id="danmu-insert-loading" class="spinner-border spinner-border-sm" role="status" style="display: none;"></div>
+</button>
+<button class="btn btn-danger" id="stop-btn" disabled>中止运行</button>

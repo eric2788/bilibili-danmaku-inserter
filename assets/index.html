@@ -4,11 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="icons/icon.png">
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
-    
-
-
 </head>
 <style>
     .color-picker {
@@ -39,6 +35,7 @@
         <div id="danmaku-insert">
             <h3>
                 同传字幕转换弹幕
+                <a class="btn btn-outline-danger" target="_blank" href="https://github.com/eric2788/bilibili-danmaku-inserter/wiki/%E9%98%B2%E6%AD%A2%E7%80%8F%E8%A6%BD%E5%99%A8%E8%87%AA%E5%8B%95%E5%88%B7%E6%96%B0Tab">如何禁止自动刷新Tab</a>
                 <button class="btn btn-outline-dark" style="float: right" id="check-update">检查更新</button>
             </h3>
             <div class="card">
@@ -58,12 +55,27 @@
                                         <span class="input-group-text rounded-0">?p=</span>
                                         <input type="number" class="form-control" placeholder="分P" id="page" min="1" required value="1">
                                     </div>
-                                    <button class="btn btn-primary" id="fetch-video-btn">
-                                        获取视频资讯
-                                        <div id="fetch-video-loading" class="spinner-border spinner-border-sm" role="status" style="display: none;">
+                                   <div class="row">
+                                        <div class="col-sm">
+                                            <button class="btn btn-primary" id="fetch-video-btn">
+                                                获取视频资讯
+                                                <div id="fetch-video-loading" class="spinner-border spinner-border-sm" role="status" style="display: none;">
+                                                </div>
+                                            </button>
+                                            <small id="fetch-video-result"></small>
                                         </div>
-                                    </button>
-                                    <small id="fetch-video-result"></small>
+                                   </div>
+                                    <div class="row">
+                                        <div class="col-sm">
+                                            <div style="float: right;">
+                                                <small id="user-fetch-result"></small>
+                                                <button class="btn btn-success" id="user-fetch-btn" disabled>
+                                                    获取弹幕发送者资讯
+                                                    <div id="user-fetch-loading" class="spinner-border spinner-border-sm" role="status" style="display: none;"></div>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </form>
                             </div>
                             <div class="col-sm">
@@ -99,88 +111,15 @@
                                 </div>
                             </div>
                         </div>
-                        <ul class="nav nav-tabs" id="section-tab" role="tablist">
-                            <li class="nav-item" role="presentation">
-                              <a class="nav-link active" id="danmaku-insert-tab" data-bs-toggle="tab" href="#danmaku-insertion" role="tab" aria-controls="home" aria-selected="true">插入弹幕</a>
-                            </li>
-                        </ul>
-                        <div class="tab-content pt-3" id="tab-content">
-                            <!-- DANMAKU INSERT -->
-                            <div class="tab-pane fade show active" id="danmaku-insertion" role="tabpanel">
-                                <div class="row">
-                                    <div class="col-sm">
-                                        <form id="danmaku-insert-form">
-                                            <div class="row">
-                                                <div class="col-sm">
-                                                    <label for="danmu-size" class="form-label">弹幕大小</label>
-                                                    <select class="form-select form-select-sm" id="danmu-size" required>
-                                                        <option value="small">小</option>
-                                                        <option value="normal" selected>中</option>
-                                                        <option value="large">大</option>
-                                                    </select>
-                                                </div>
-                                                <div class="col-sm">
-                                                    <label for="danmu-position" class="form-label">弹幕位置</label>
-                                                    <select class="form-select form-select-sm" id="danmu-position" required>
-                                                        <option value="normal" selected>滚动</option>
-                                                        <option value="top">置顶</option>
-                                                        <option value="bottom">置底</option>
-                                                    </select>
-                                                </div>
-                                                <div class="col-sm">
-                                                    <label for="danmu-color" class="form-label">颜色选择</label>
-                                                    <input type="color" class="form-control form-control-color form-control-sm" id="danmu-color" title="选择颜色" value="#FFFFFF" required>
-                                                </div>
-                                            </div>
-                                            <div class="form-check form-switch">
-                                                <input class="form-check-input" type="checkbox" id="danmu-sub" disabled>
-                                                <label class="form-check-label" for="danmu-sub">启用字幕(暂不可用)</label>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-sm">
-                                                    <label for="interval-range" class="form-label">发送请求间隔</label>
-                                                    <div class="input-group mb-3">
-                                                        <input class="form-control" type="number" id="interval-range" min="5000" value="20000" aria-describedby="interval-range-help" required>
-                                                        <span class="input-group-text" id="interval-range-help">毫秒</span>
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm">
-                                                    <label for="resend-interval" class="form-label">发送频率过快时重试间隔</label>
-                                                    <div class="input-group mb-3">
-                                                        <input class="form-control" type="number" id="resend-interval" min="1000" value="60000" aria-describedby="resend-interval-help" required>
-                                                        <span class="input-group-text" id="resend-interval-help">毫秒</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <button class="btn btn-primary" id="danmu-insert-btn" disabled>
-                                                开始插入
-                                                <div id="danmu-insert-loading" class="spinner-border spinner-border-sm" role="status" style="display: none;"></div>
-                                            </button>
-                                            <button class="btn btn-danger" id="stop-btn" disabled>中止运行</button>
-                                            <button class="btn btn-success" id="user-fetch-btn" disabled>
-                                                获取弹幕发送者资讯
-                                                <div id="user-fetch-loading" class="spinner-border spinner-border-sm" role="status" style="display: none;"></div>
-                                            </button>
-                                            <small id="user-fetch-result"></small>
-                                        </form>
-                                    </div>
-                                    <div class="col-sm">
-                                        <div class="border border-secondary logger-box" id="main-output-danmu">
-                                            <p class="log">(输出日志: 此处将进行日志输出)</p>
-                                        </div>
-                                        <button class="btn btn-danger btn-sm" style="float: right" id="clear-log-btn-danmu">清空日志</button>
-                                    </div>
-                                </div>
-                            </div>        
-                          </div>
+                        <ul class="nav nav-tabs" id="section-tab" role="tablist"></ul>
+                        <div class="tab-content pt-3" id="tab-content"></div>
                     </div>
                 </div>
             </div>
         </div>
         <hr>
         <h3>字幕记录转换</h3>
-        <div id="danmaku-convert">
-        </div>
+        <div id="danmaku-convert"></div>
     </div>
 </body>
 <style>

@@ -1,4 +1,4 @@
-import { BilibiliCommunityCaption } from "./BilibiliCommunityCaption";
+import { BilibiliCommunityCaption } from "../BilibiliCommunityCaption";
 
 export interface Runnable<T> {
     

@@ -1,8 +1,8 @@
 import { Loggable } from "../loggers/Loggable";
-import { Runnable } from "../types/Runnable";
+import { Runnable } from "../types/runner/Runnable";
 import { nameOf, readAsDanmus, throwError } from "../utils/misc";
 import { GlobalSettings } from "../types/settings/GlobalSettings";
-import { MainStreamRunner } from "../types/MainStreamRunner";
+import { MainStreamRunner } from "../types/runner/MainStreamRunner";
 
 
 async function getRunner<T>(key: string, globalSetting: GlobalSettings, setting: Satisfiable): Promise<Loggable & Runnable<T>>{

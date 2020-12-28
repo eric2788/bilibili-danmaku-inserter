@@ -1,6 +1,6 @@
 import { BccConvertSettings } from "../types/settings/BccConvertSettings";
 import { BilibiliCommunityCaption } from "../types/BilibiliCommunityCaption";
-import { MainStreamRunner } from "../types/MainStreamRunner";
+import { MainStreamRunner } from "../types/runner/MainStreamRunner";
 import { SubtitleInfo } from "../types/infos/SubtitleInfo";
 import { keys } from "ts-transformer-keys";
 

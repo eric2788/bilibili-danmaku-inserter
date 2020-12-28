@@ -19,10 +19,17 @@ browser.browserAction.onClicked.addListener(async (tab, clickData) => {
             autoDiscardable: false // 防止浏览器自动刷新tab
         })
     }catch(err){
-        await sendNotify({
-            title: '无法打开界面',
-            message: err?.message ?? err
-        })
+        if (err?.message?.includes('autoDiscardable')){
+            await sendNotify({
+                title: '你的浏览器不支援由插件禁止自动刷新Tab',
+                message: '请点击「如何禁止自动刷新Tab」按钮以查看如何禁止自动刷新'
+            })
+        }else{
+            await sendNotify({
+                title: '打开界面时出现错误',
+                message: err?.message ?? err
+            })
+        }
     }
 })
 
