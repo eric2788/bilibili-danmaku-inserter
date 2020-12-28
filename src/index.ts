@@ -79,8 +79,8 @@ runnerLoadingPattern<any>({
                 fontSize: $_.select('#danmu-size').value as Size,
                 position: $_.select('#danmu-position').value as Position
             },
-            interval: $_.input('#interval-range').valueAsNumber ?? 5000,
-            resendInterval: $_.input('#resend-interval').valueAsNumber ?? 20000,
+            interval: $_.input('#interval-range').valueAsNumber ?? 20000,
+            resendInterval: $_.input('#resend-interval').valueAsNumber ?? 60000,
             isSatisfied: () => {
                 if (!biliInsertSettings.currentVideo){
                     return '没有视频资讯'
