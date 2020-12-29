@@ -5,8 +5,6 @@ import $_ from "./utils/jquery-extend";
 import ParseManager from './managers/ParseManager'
 import { BilibilJimakuFilterParser } from "./parsers/BilibiliJimakuFilterParser";
 import DanmakuManager from "./managers/DanmakuManager";
-import { ConsoleLogger } from "./loggers/ConsoleLogger";
-import { DomLogger } from "./loggers/DomLogger";
 import { Position, Size } from "./types/danmu/DanmuSettings";
 import { DanmakuInserterRunner } from "./runners/DanmakuInserterRunner";
 import { BCCConvertRunner } from "./runners/BCCConvertRunner";
@@ -35,7 +33,6 @@ TabManager.addTab<any>({
         loading: 'danmu-insert-loading',
         stopBtn: 'stop-btn',
         runner: 'DanmakuInserterRunner',
-        tab: 'danmaku-insertion',
         settings: () => {
             const biliInsertSettings: BilibiliInserterSettings = {
                 currentVideo: storage.currentVideo,
@@ -58,11 +55,7 @@ TabManager.addTab<any>({
             }
             return biliInsertSettings
         },
-        run: async (runner) => {
-            runner.addLogger(new ConsoleLogger(window.console))
-            runner.addLogger(new DomLogger($('#main-output-danmu')[0]))
-            await runner.run()
-        }
+        run: async (runner) => await runner.run()
     }
 })
 
@@ -74,7 +67,6 @@ TabManager.addTab<BilibiliCommunityCaption>({
             loading: 'bcc-loading',
             stopBtn: undefined,
             runner: 'BCCConvertRunner',
-            tab: 'bcc',
             settings: () => {
                 const bccInfo: BccConvertSettings = {
                     font_size: $_.input('#bcc-font-size').valueAsNumber ?? 0.5,
@@ -87,8 +79,6 @@ TabManager.addTab<BilibiliCommunityCaption>({
                 return bccInfo
             },
             run: async (runner) => {
-                runner.addLogger(new ConsoleLogger(window.console))
-                runner.addLogger(new DomLogger($('#main-output-bcc')[0]))
                 const bcc = await runner.run()
                 const json = JSON.stringify(bcc)
                 await download({ file: 'converted.bcc', type: 'plain/text', content: json})

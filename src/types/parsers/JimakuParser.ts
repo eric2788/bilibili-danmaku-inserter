@@ -1,4 +1,4 @@
-import { Danmu } from '../types/danmu/Danmu'
+import { Danmu } from '../danmu/Danmu'
 
 export interface JimakuParser {
 

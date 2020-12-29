@@ -1,5 +1,5 @@
-import { Danmu } from "../types/danmu/Danmu";
-import { Loggable } from "../loggers/Loggable";
+import { Danmu } from "../danmu/Danmu";
+import { Loggable } from "../../loggers/Loggable";
 import { JimakuParser } from "./JimakuParser";
 
 export abstract class JimakuLoggableParser extends Loggable implements JimakuParser {

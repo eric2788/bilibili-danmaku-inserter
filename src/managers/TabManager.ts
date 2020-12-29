@@ -6,6 +6,8 @@ import { throwError } from "../utils/misc";
 import DanmakuManager from "./DanmakuManager";
 import { GlobalSettings } from "../types/settings/GlobalSettings";
 import { RunnerLoadingPattern } from "../types/runner/RunnerLoadingPattern";
+import { DomLogger } from "../loggers/DomLogger";
+import { ConsoleLogger } from "../loggers/ConsoleLogger";
 
 async function addTab<T>(info: TabInfo<T>){
     try {
@@ -32,7 +34,6 @@ async function addTab<T>(info: TabInfo<T>){
                     </div>
                     <button class="btn btn-danger btn-sm" style="float: right" id="clear-log-btn-${id}">
                         清空日志
-                    <div id="${id}-clear-loading" class="spinner-border spinner-border-sm" role="status" style="display: none;">
                     </button>
                 </div>
             </div>
@@ -43,7 +44,7 @@ async function addTab<T>(info: TabInfo<T>){
         tabContent.append(template)
         $(`form#${id}-form`).append(formContent)
         clearLogLink(id)
-        runnerLoadingPattern(runner)
+        runnerLoadingPattern(runner, id)
     }catch(err){
         console.error(err)
         await sendNotify({
@@ -55,14 +56,12 @@ async function addTab<T>(info: TabInfo<T>){
 
 function clearLogLink(id: string){
     $(`#clear-log-btn-${id}`).on('click', e => {
-        $_.toggleShow(`#${id}-clear-loading`, true)
         $(`#main-output-${id} > p`).remove()
-        $_.toggleShow(`#${id}-clear-loading`, false)
     })
 }
 
-function runnerLoadingPattern<T extends Object>(data: RunnerLoadingPattern<T>){
-    const {btn, runner: key, loading, tab, stopBtn, settings, run} = data
+function runnerLoadingPattern<T extends Object>(data: RunnerLoadingPattern<T>, tab: string){
+    const {btn, runner: key, loading, stopBtn, settings, run} = data
     const btnEle = $(`#${btn}`)
     btnEle.on('click', async e => {
         const form = $(`#${tab} form`)
@@ -98,6 +97,8 @@ function runnerLoadingPattern<T extends Object>(data: RunnerLoadingPattern<T>){
                     $_.toggleDisable(`#${tab} #${stopBtn}`, true)
                 })
             }
+            runner.addLogger(new ConsoleLogger(window.console))
+            runner.addLogger(new DomLogger($(`#main-output-${tab}`)[0]))
             await run(runner)
             await sendNotify({
                 title: '运行成功',

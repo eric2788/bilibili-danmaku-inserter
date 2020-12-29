@@ -1,6 +1,6 @@
 import { ConsoleLogger } from "../loggers/ConsoleLogger"
 import { DomLogger } from "../loggers/DomLogger"
-import { JimakuLoggableParser } from "../parsers/JimakuLoggableParser"
+import { JimakuLoggableParser } from "../types/parsers/JimakuLoggableParser"
 import { download, generateToken, loadingPattern, readAsText, throwError } from "../utils/misc"
 import $ from 'jquery'
 import $_ from '../utils/jquery-extend'

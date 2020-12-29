@@ -1,7 +1,7 @@
 import { Danmu } from "../types/danmu/Danmu";
 import { ICUJimaku } from "../types/parsers/ICUJimaku";
 import { sleep, throwError } from "../utils/misc";
-import { JimakuLoggableParser } from "./JimakuLoggableParser";
+import { JimakuLoggableParser } from "../types/parsers/JimakuLoggableParser";
 
 export class ICUJimakuParser extends JimakuLoggableParser {
 

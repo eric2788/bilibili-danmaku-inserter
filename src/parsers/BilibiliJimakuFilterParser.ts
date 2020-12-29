@@ -1,5 +1,5 @@
 import { Danmu } from "../types/danmu/Danmu";
-import { JimakuLoggableParser } from "./JimakuLoggableParser";
+import { JimakuLoggableParser } from "../types/parsers/JimakuLoggableParser";
 import { sleep, throwError, timeToNanoSecs } from "../utils/misc";
 export class BilibilJimakuFilterParser extends JimakuLoggableParser{
 

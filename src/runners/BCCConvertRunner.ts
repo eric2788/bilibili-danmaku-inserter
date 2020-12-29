@@ -3,6 +3,7 @@ import { BilibiliCommunityCaption } from "../types/BilibiliCommunityCaption";
 import { MainStreamRunner } from "../types/runner/MainStreamRunner";
 import { SubtitleInfo } from "../types/infos/SubtitleInfo";
 import { keys } from "ts-transformer-keys";
+import { sleep } from "../utils/misc";
 
 export class BCCConvertRunner extends MainStreamRunner<BilibiliCommunityCaption, BccConvertSettings> {
 
@@ -39,6 +40,7 @@ export class BCCConvertRunner extends MainStreamRunner<BilibiliCommunityCaption,
                 this.error(err)
             }finally{
                 line++
+                await sleep(1)
             }
         }
 
