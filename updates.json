@@ -3,6 +3,11 @@
       "{bbc7ff6b-4edd-40dc-bcd9-2214f91deada}": {
         "updates": [
           {
+            "version": "0.3.3",
+            "update_link": "https://github.com/eric2788/bilibili-danmaku-inserter/releases/download/0.3.3/bilibili_danmaku_inserter-0.3.3-an+fx.xpi",
+            "update_info_url": "https://eric2788.github.io/bilibili-danmaku-inserter/log/0.3.3"
+          },
+          {
             "version": "0.3.2",
             "update_link": "https://github.com/eric2788/bilibili-danmaku-inserter/releases/download/0.3.2/bilibili_danmaku_inserter-0.3.2-an+fx.xpi",
             "update_info_url": "https://eric2788.github.io/bilibili-danmaku-inserter/log/0.3.2"
