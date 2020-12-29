@@ -9,6 +9,9 @@ import { RunnerLoadingPattern } from "../types/runner/RunnerLoadingPattern";
 import { DomLogger } from "../loggers/DomLogger";
 import { ConsoleLogger } from "../loggers/ConsoleLogger";
 
+
+const running: Set<string> = new Set()
+
 async function addTab<T>(info: TabInfo<T>){
     try {
         const {id, render, name, active, runner} = info
@@ -71,10 +74,14 @@ function runnerLoadingPattern<T extends Object>(data: RunnerLoadingPattern<T>, t
         e.preventDefault()
         $_.toggleShow(`#${tab} #${loading}`, true)
         $_.toggleDisable(`#${tab} button`, true)
+        $_.toggleDisable(`#prepare-form button`, true)
         if (stopBtn){
             $_.toggleDisable(`#${tab} #${stopBtn}`, false)
         }
         try {
+            if (running.has(tab)) {
+                throwError('此程序正在运行中。')
+            }
             const files = $_.input(`#danmaku-insert-file`).files
             if (files.length == 0) {
                 throwError('你没有选择任何档案。')
@@ -99,6 +106,7 @@ function runnerLoadingPattern<T extends Object>(data: RunnerLoadingPattern<T>, t
             }
             runner.addLogger(new ConsoleLogger(window.console))
             runner.addLogger(new DomLogger($(`#main-output-${tab}`)[0]))
+            running.add(tab)
             await run(runner)
             await sendNotify({
                 title: '运行成功',
@@ -111,8 +119,10 @@ function runnerLoadingPattern<T extends Object>(data: RunnerLoadingPattern<T>, t
                 message: err?.message ?? err
             })
         }finally {
+            running.delete(tab)
             $_.toggleShow(`#${tab} #${loading}`, false)
             $_.toggleDisable(`#${tab} button`, false)
+            if (running.size === 0) $_.toggleDisable(`#prepare-form button`, false)
             if (stopBtn) $_.toggleDisable(`#${stopBtn}`, true)
             window.onbeforeunload = function(e: BeforeUnloadEvent) {
                 delete e.returnValue

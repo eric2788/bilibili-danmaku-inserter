@@ -49,7 +49,6 @@ export class DanmakuInserterRunner extends MainStreamRunner<any, BilibiliInserte
 
                 if (this._terminate){
                     this.info(`运行已被手动中止。`, line)
-                    this._terminate = false
                     return;
                 }
 
@@ -58,8 +57,6 @@ export class DanmakuInserterRunner extends MainStreamRunner<any, BilibiliInserte
                 if(danmu.timestamp > maxTimeStamp){
                     throwError('时间戳记超出视频总时长')
                 }
-
-                await this.sleep(interval)
 
                 const res = await sendDanmu({
                     msg: danmu.msg,
@@ -87,6 +84,7 @@ export class DanmakuInserterRunner extends MainStreamRunner<any, BilibiliInserte
                 this.error(err, line)
             }finally{
                 line++
+                await this.sleep(interval)
             }
         }
     }
