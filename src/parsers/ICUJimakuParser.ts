@@ -32,7 +32,7 @@ export class ICUJimakuParser extends JimakuLoggableParser {
                     timestamp: realTime,
                     msg: comment.text
                 }) 
-                this.info(`文字转换成功: [时间=${realTime},讯息=${comment.text}]`, line)
+                this.info(`文字转换成功: [时间=${realTime},讯息=\"${comment.text}\",时间参照=\"${this.toTimer(Math.round(realTime / 1000))}\"]`, line)
             }catch(err){
                 this.error(err, line)
             }finally{
@@ -43,4 +43,19 @@ export class ICUJimakuParser extends JimakuLoggableParser {
         return body
     }
 
+    private toTimer(secs: number): string{
+        let min = 0;
+        let hr = 0;
+        while(secs >= 60){
+            secs -= 60
+            min++
+        }
+        while (min >= 60){
+            min -= 60
+            hr++
+        }
+        const mu = min > 9 ? `${min}`: `0${min}`
+        const ms = secs > 9 ? `${secs}` : `0${secs}`
+        return `${hr}:${mu}:${ms}`
+    }
 }

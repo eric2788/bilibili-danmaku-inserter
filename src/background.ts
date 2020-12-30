@@ -5,8 +5,9 @@ import { VideoInfo } from './types/infos/VideoInfo'
 import { NotifyMessage } from './types/NotifyMessage'
 import { DanmuSendInfo } from './types/danmu/DanmuSendInfo'
 import { ajax } from 'jquery'
-import { canUseButton, isFirefox } from './utils/misc'
+import { canUseButton, isChrome, isEdge, isFirefox } from './utils/misc'
 import UpdateManager, { currentVersion, extName } from './managers/UpdateManager'
+import { VersionInfo } from './types/infos/VersionInfo'
 
 console.log('background is working...')
 
@@ -212,10 +213,6 @@ if (!isFirefox){
     }).catch(console.error)
 }
 
-function logLink(version: string){
-    return `https://github.com/eric2788/bilibili-danmaku-inserter/releases/tag/${version}`
-}
-
 browser.notifications.onButtonClicked.addListener(async (nid, bi) => {
     const latest = updateManager.latestVersion
     if (nid === 'bdi:update') {
@@ -239,5 +236,9 @@ browser.notifications.onButtonClicked.addListener(async (nid, bi) => {
     } else if (nid === 'bdi:updated'){
         await browser.tabs.create({url: logLink(currentVersion)})
     }
-    
+
 })
+
+function logLink(version: string): string{
+    return `https://github.com/eric2788/bilibili-danmaku-inserter/releases/tag/${version}`
+}

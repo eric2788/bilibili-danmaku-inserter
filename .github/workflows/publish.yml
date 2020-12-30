@@ -1,5 +1,5 @@
 env:
-    version: 0.3.3
+    version: 0.3.4
     name: bilibili_danmaku_inserter
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
 

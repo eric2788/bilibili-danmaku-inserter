@@ -109,7 +109,7 @@ export async function sleep(ms: number){
     return new Promise((res,) => setTimeout(res, ms))
 }
 
-export function hexColorToDecmial(hex: string){
+export function hexColorToDecmial(hex: string): number{
     if(!/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)){
         throwError(`unknown hex value: ${hex}`)
     }
@@ -134,9 +134,25 @@ export const isFirefox = navigator.userAgent.indexOf('Firefox') > -1
 
 export const isChrome = navigator.userAgent.indexOf('Chrome') > -1
 
-export const operaAgent = navigator.userAgent.indexOf("OP") > -1
+export const isEdge = navigator.userAgent.indexOf("Edg") > -1
 
-export const canUseButton = isChrome
+export const isOpera = navigator.userAgent.indexOf("OP") > -1
+
+export function getUserAgent(): string{
+    if (isEdge){
+        return "edge"
+    }else if (isChrome){
+        return "chrome"
+    }else if (isFirefox){
+        return "firefox"
+    }else if (isOpera){
+        return "opera"
+    }else {
+        return "not-supported"
+    }
+}
+
+export const canUseButton = isChrome || isEdge
 
 export const newerThan = function (str: string, version: string) {
     const current = str.split('.')

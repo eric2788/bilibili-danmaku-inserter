@@ -1,7 +1,7 @@
-import { browser } from "webextension-polyfill-ts"
+import { browser, Runtime } from "webextension-polyfill-ts"
 import { NotifyMessage } from "../types/NotifyMessage"
 import { VersionInfo } from "../types/infos/VersionInfo"
-import { canUseButton, newerThan } from "../utils/misc"
+import { canUseButton, getUserAgent, newerThan } from "../utils/misc"
 
 export const extName = browser.runtime.getManifest().name
 export const currentVersion = browser.runtime.getManifest().version
@@ -22,18 +22,18 @@ export default class UpdateManager {
         this.webFetch = webFetch;
     }
 
+    private async checkUpdateHandle(handle: UpdateHandle): Promise<VersionInfo>{
+        return handle.checkUpdate(this.webFetch)
+    }
+
     async checkUpdate(notify: boolean = false): Promise<NotifyMessage | undefined>{
         try {
-            const addons = (await this.webFetch(updateApi)).addons
-            if (addons) {
-                const verList = addons[eid]?.updates
-                if (verList){
-                    for (const update of verList) {
-                        if (newerThan(update.version, this.latest?.version ?? "")){
-                            this.latest = update
-                        }
-                    }
-                }
+            try {
+                this.latest = await this.checkUpdateHandle(new CheckUpdateAPI())
+            }catch(err){
+                console.warn(err)
+                console.warn(`use back the original checking way.`)
+                this.latest = await this.checkUpdateHandle(new CheckUpdateOther())
             }
             if (!this.latest) {
                 if (notify) {
@@ -78,5 +78,68 @@ export default class UpdateManager {
                 message: err.message
             }
         }
+    }
+}
+
+interface UpdateHandle{
+
+    checkUpdate(webFetch: (url: string) => Promise<any>): Promise<VersionInfo>
+
+}
+
+
+type UpdateCheck = { requestUpdateCheck: () => Promise<[status: string, update: {version: string}]>}
+
+class CheckUpdateAPI implements UpdateHandle{
+
+    async checkUpdate(webFetch: (url: string) => Promise<any>): Promise<VersionInfo>{
+        const auto_update_supported = (await webFetch(updateApi))?.auto_update_supported ?? {}
+        const id = browser.runtime.id
+        const agent = getUserAgent()
+        const dlLink: string = auto_update_supported[agent]
+        if (dlLink === undefined){
+            throw new Error('your browser is not support auto updated.')
+        }
+        const forceCheckFunction: Runtime.Static & UpdateCheck = browser.runtime as any
+        const [status, update] = await forceCheckFunction.requestUpdateCheck()
+        
+        if (status === 'update_available'){
+            return {
+                ...update,
+                update_info_url: null,
+                update_link: dlLink.concat(id)
+            }
+        }
+        console.log(update)
+        if (status === 'throttled'){
+            throw new Error('update is throttled')
+        }
+        return {
+            version: currentVersion,
+            update_info_url: null,
+            update_link: dlLink.concat(id)
+        }
+    }
+
+}
+
+
+
+class CheckUpdateOther implements UpdateHandle{
+    
+    async checkUpdate(webFetch: (url: string) => Promise<any>): Promise<VersionInfo>{
+        let latest: VersionInfo = undefined
+        const addons = (await webFetch(updateApi)).addons
+        if (addons) {
+            const verList = addons[eid]?.updates
+            if (verList) {
+                for (const update of verList) {
+                    if (newerThan(update.version, latest?.version ?? "")) {
+                        latest = update
+                    }
+                }
+            }
+        }
+        return latest
     }
 }

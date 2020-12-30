@@ -2,7 +2,7 @@
 
     "manifest_version": 2,
     "name": "bilibili danmaku inserter",
-    "version": "0.3.3",
+    "version": "0.3.4",
   
     "description": "bilibili danmaku inserter by ericlam",
     "author": "Eric Lam",
@@ -23,10 +23,7 @@
     ],
 
     "background":{
-        "scripts": [
-          "browser-polyfill.min.js",
-          "background.js"
-        ],
+        "scripts": [ "background.js" ],
         "persistent": true
     },
 
