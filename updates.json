@@ -49,5 +49,9 @@
           }
         ]
       }
+    },
+    "auto_update_supported": {
+      "edge": "https://microsoftedge.microsoft.com/addons/detail/",
+      "chrome": "https://www.google.com/search?query="
     }
   }
