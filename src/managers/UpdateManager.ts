@@ -4,7 +4,7 @@ import { VersionInfo } from "../types/infos/VersionInfo"
 import { canUseButton, getUserAgent, isChrome, isEdge, newerThan } from "../utils/misc"
 
 export const extName = browser.runtime.getManifest().name
-export const currentVersion = browser.runtime.getManifest().version
+export const currentVersion = "0.3.3"//browser.runtime.getManifest().version
 const updateApi = browser.runtime.getManifest().applications.gecko.update_url
 const eid = browser.runtime.getManifest().applications.gecko.id
 
@@ -107,11 +107,10 @@ class CheckUpdateAPI implements UpdateHandle{
     private auto_update_supported: {[key: string]: string}
 
     constructor(autoUpdate:  {[key: string]: string}){
-        this.auto_update_supported = this.auto_update_supported
+        this.auto_update_supported = autoUpdate
     }
 
     async checkUpdate(webFetch: (url: string) => Promise<any>): Promise<VersionInfo>{
-        const id = browser.runtime.id
         const agent = getUserAgent()
         const dlLink: string = this.auto_update_supported[agent]
         if (dlLink === undefined){
@@ -127,7 +126,6 @@ class CheckUpdateAPI implements UpdateHandle{
                 update_link: dlLink
             }
         }
-        console.log(update)
         if (status === 'throttled'){
             throw new Error('update is throttled')
         }
