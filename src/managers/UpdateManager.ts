@@ -4,7 +4,7 @@ import { VersionInfo } from "../types/infos/VersionInfo"
 import { canUseButton, getUserAgent, isChrome, isEdge, newerThan } from "../utils/misc"
 
 export const extName = browser.runtime.getManifest().name
-export const currentVersion = "0.3.3"//browser.runtime.getManifest().version
+export const currentVersion = browser.runtime.getManifest().version
 const updateApi = browser.runtime.getManifest().applications.gecko.update_url
 const eid = browser.runtime.getManifest().applications.gecko.id
 
