@@ -100,7 +100,6 @@ loadingPattern({
         $('#video-info-page')[0].innerText = `${info.page}`
         $('#video-info-duration')[0].innerText = `${info.duration}`
         storage.currentVideo = info
-        $_.toggleDisable('#user-fetch-btn', false)
         return '视频资讯请求成功'
     }
 })
@@ -112,17 +111,9 @@ loadingPattern({
     run: async () => {
         const {username, lvl} = await fetchUser()
         verifyLevel(lvl)
-        $_.toggleDisable('#danmu-insert-btn', false)
         return `弹幕发送者: ${username} (Lv${lvl})`
     }
 })
-
-
-function clearLogLink(id: string){
-    $(`#clear-log-btn-${id}`).on('click', e => {
-        $(`#main-output-${id} > p`).remove()
-    })
-}
 
 function verifyLevel(lvl: number){
     $_.toggleDisable('#danmu-position', false)

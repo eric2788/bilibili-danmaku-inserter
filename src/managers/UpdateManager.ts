@@ -1,7 +1,7 @@
 import { browser, Runtime } from "webextension-polyfill-ts"
 import { NotifyMessage } from "../types/NotifyMessage"
 import { VersionInfo } from "../types/infos/VersionInfo"
-import { canUseButton, getUserAgent, newerThan } from "../utils/misc"
+import { canUseButton, getUserAgent, isChrome, isEdge, newerThan } from "../utils/misc"
 
 export const extName = browser.runtime.getManifest().name
 export const currentVersion = browser.runtime.getManifest().version
@@ -13,9 +13,20 @@ export default class UpdateManager {
 
     private webFetch: (url: string) => Promise<any>;
     private latest: VersionInfo = undefined
+    private auto_update_supported: {[key: string]: string} = {}
 
     get latestVersion(): VersionInfo {
         return this.latest
+    }
+
+    get latestLink(): string {
+        if (isEdge && this.auto_update_supported['edge']){
+            return this.auto_update_supported['edge']
+        }else if (isChrome && this.auto_update_supported['chrome']){
+            return this.auto_update_supported['chrome']
+        } else {
+            return this.latest.update_link
+        }
     }
 
     constructor(webFetch: (url: string) => Promise<any>){
@@ -28,8 +39,9 @@ export default class UpdateManager {
 
     async checkUpdate(notify: boolean = false): Promise<NotifyMessage | undefined>{
         try {
+            this.auto_update_supported = (await this.webFetch(updateApi))?.auto_update_supported ?? {}
             try {
-                this.latest = await this.checkUpdateHandle(new CheckUpdateAPI())
+                this.latest = await this.checkUpdateHandle(new CheckUpdateAPI(this.auto_update_supported))
             }catch(err){
                 console.warn(err)
                 console.warn(`use back the original checking way.`)
@@ -92,11 +104,16 @@ type UpdateCheck = { requestUpdateCheck: () => Promise<[status: string, update: 
 
 class CheckUpdateAPI implements UpdateHandle{
 
+    private auto_update_supported: {[key: string]: string}
+
+    constructor(autoUpdate:  {[key: string]: string}){
+        this.auto_update_supported = this.auto_update_supported
+    }
+
     async checkUpdate(webFetch: (url: string) => Promise<any>): Promise<VersionInfo>{
-        const auto_update_supported = (await webFetch(updateApi))?.auto_update_supported ?? {}
         const id = browser.runtime.id
         const agent = getUserAgent()
-        const dlLink: string = auto_update_supported[agent]
+        const dlLink: string = this.auto_update_supported[agent]
         if (dlLink === undefined){
             throw new Error('your browser is not support auto updated.')
         }
@@ -107,7 +124,7 @@ class CheckUpdateAPI implements UpdateHandle{
             return {
                 ...update,
                 update_info_url: null,
-                update_link: dlLink.concat(id)
+                update_link: dlLink
             }
         }
         console.log(update)
@@ -117,7 +134,7 @@ class CheckUpdateAPI implements UpdateHandle{
         return {
             version: currentVersion,
             update_info_url: null,
-            update_link: dlLink.concat(id)
+            update_link: dlLink
         }
     }
 

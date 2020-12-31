@@ -5,9 +5,8 @@ import { VideoInfo } from './types/infos/VideoInfo'
 import { NotifyMessage } from './types/NotifyMessage'
 import { DanmuSendInfo } from './types/danmu/DanmuSendInfo'
 import { ajax } from 'jquery'
-import { canUseButton, isChrome, isEdge, isFirefox } from './utils/misc'
+import { canUseButton, isFirefox, throwError } from './utils/misc'
 import UpdateManager, { currentVersion, extName } from './managers/UpdateManager'
-import { VersionInfo } from './types/infos/VersionInfo'
 
 console.log('background is working...')
 
@@ -112,26 +111,34 @@ async function sendDanmu(data: DanmuSendInfo){
 
 
 async function fetchUser(): Promise<{username: string, lvl: number}>{
-    const tab = await browser.tabs.create({
-        url: 'https://space.bilibili.com',
-        active: false,
-    })
-    const csrfResult = await browser.tabs.executeScript(tab.id, {
-        code: `/bili_jct=(.+?)[;$]/.exec(document.cookie)?.pop()`
-    })
-    const usernameResult = await browser.tabs.executeScript(tab.id, {
-        code: `document.getElementById('h-name')?.innerText`
-    })
-    const lvlResult = await browser.tabs.executeScript(tab.id, {
-        code: `parseInt(document.getElementsByClassName('h-level')[0]?.getAttribute('lvl'))`
-    })
-    await browser.tabs.remove(tab.id)
-    const result = [...csrfResult, ...usernameResult, ...lvlResult]
-    const [ token, username, lvl ] = result
-    if (!token || !username || !lvl) throw new Error('尚未登入!')
-    console.log(`csrfToken: ${token}, username: ${username}. level: ${lvl}`)
-    csrfToken = token
-    return {username, lvl}
+    try {
+        const tab = await browser.tabs.create({
+            url: 'https://space.bilibili.com',
+            active: false,
+        })
+        const csrfResult = await browser.tabs.executeScript(tab.id, {
+            code: `/bili_jct=(.+?)[;$]/.exec(document.cookie)?.pop()`
+        })
+        const usernameResult = await browser.tabs.executeScript(tab.id, {
+            code: `document.getElementById('h-name')?.innerText`
+        })
+        const lvlResult = await browser.tabs.executeScript(tab.id, {
+            code: `parseInt(document.getElementsByClassName('h-level')[0]?.getAttribute('lvl'))`
+        })
+        await browser.tabs.remove(tab.id)
+        const result = [...csrfResult, ...usernameResult, ...lvlResult]
+        const [ token, username, lvl ] = result
+        if (!token || !username || !lvl) throwError('獲取資訊失敗，請稍候再嘗試。')
+        console.log(`csrfToken: ${token}, username: ${username}. level: ${lvl}`)
+        csrfToken = token
+        return {username, lvl}
+    }catch(err){
+        console.error(err)
+        if (err?.message?.includes('passport.bilibili.com/login')){
+            throwError('尚未登入!')
+        }
+        throw err
+    }
 }
 
 async function loadHtml(locate: string): Promise<string>{
@@ -226,7 +233,7 @@ browser.notifications.onButtonClicked.addListener(async (nid, bi) => {
         switch (bi) {
             case 0:
                 //下载更新
-                await browser.tabs.create({ url: latest.update_link })
+                await browser.tabs.create({ url: updateManager.latestLink })
                 break;
             case 1:
                 //查看更新日志
