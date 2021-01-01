@@ -134,7 +134,7 @@ async function fetchUser(): Promise<{username: string, lvl: number}>{
         return {username, lvl}
     }catch(err){
         console.error(err)
-        if (err?.message?.includes('passport.bilibili.com/login')){
+        if (err?.message?.includes('must request permission to access the respective host.')){
             throwError('尚未登入!')
         }
         throw err
