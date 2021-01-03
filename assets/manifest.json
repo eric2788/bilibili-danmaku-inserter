@@ -33,7 +33,7 @@
       }
     },
 
-    "content_security_policy": "script-src 'self' https://cdn.jsdelivr.net https://code.jquery.com; object-src 'self'",
+    "content_security_policy": "script-src 'self' https://cdn.jsdelivr.net; object-src 'self'",
 
     "browser_action": {
       "browser_style": true,
