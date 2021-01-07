@@ -22,7 +22,7 @@ export class BCCConvertRunner extends MainStreamRunner<BilibiliCommunityCaption,
                 const from = Math.max(0, parseFloat(((danmu.timestamp + this.delay) / 1000).toFixed(5))) // avoid < 0
                 const currentInfo: SubtitleInfo = {
                     from,
-                    to: from + 3,
+                    to: from + this.setting.duration, // default duration is 3
                     location: 2,
                     content: danmu.msg
                 }

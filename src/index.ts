@@ -74,6 +74,7 @@ TabManager.addTab<BilibiliCommunityCaption>({
                     background_alpha: $_.input('#bcc-bg-opacity').valueAsNumber ?? 0.4,
                     background_color: $_.input('#bcc-bg-color').value ?? '#9C27B0',
                     Stroke: 'none',
+                    duration: $_.input('#bcc-duration').valueAsNumber ?? 3,
                     isSatisfied: () => undefined
                 }
                 return bccInfo
