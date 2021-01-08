@@ -10,3 +10,10 @@
 
 
 
+## 下载
+
+[火狐](https://github.com/eric2788/bilibili-danmaku-inserter/releases)
+
+[Chrome](https://chrome.google.com/webstore/detail/bmgjnpnoikglngkbkfhkbghkgjhhogca)
+
+[Edge](https://microsoftedge.microsoft.com/addons/detail/ofboikhickhjhmfkaojahdlfflcknoob)
