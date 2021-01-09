@@ -44,6 +44,8 @@ export class BCCConvertRunner extends MainStreamRunner<BilibiliCommunityCaption,
             }
         }
 
+        delete this.setting.duration // delete duration property
+
         return {
             ...this.setting,
             body

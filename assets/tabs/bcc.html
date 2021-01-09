@@ -19,7 +19,10 @@
 <div class="row mb-3">
     <div class="col-sm">
         <label for="bcc-duration" class="form-label">字幕逗留时间</label>
-        <input class="form-control" type="number" id="bcc-duration" min="3" max="15" value="3">
+        <div class="input-group mb-3">
+            <input class="form-control" type="number" id="bcc-duration" min="3" max="15" value="3" aria-describedby="bcc-duration-help">
+            <span class="input-group-text" id="bcc-duration-help">秒</span>
+        </div>
     </div>
 </div>
 <button class="btn btn-primary" id="bcc-btn">
