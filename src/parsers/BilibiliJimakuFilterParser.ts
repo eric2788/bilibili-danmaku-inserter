@@ -7,7 +7,7 @@ export class BilibilJimakuFilterParser extends JimakuLoggableParser{
 
     acceptedFormat: string[] = ['.log']
 
-    link: string = 'https://github.com/eric2788/bilibili-jimaku-filter'
+    link: string = 'https://ngabbs.com/read.php?tid=24434809'
 
     async parse(txt: String): Promise<Danmu[]> {
         const logs = txt.split('\n')

@@ -16,13 +16,14 @@ export class BCCConvertRunner extends MainStreamRunner<BilibiliCommunityCaption,
         
         let lastInsert: SubtitleInfo = undefined
         let line = 1
+        const extra = this.setting.extra
         while (this.danmus.length > 0){
             try {
                 const danmu = this.danmus.shift()
                 const from = Math.max(0, parseFloat(((danmu.timestamp + this.delay) / 1000).toFixed(5))) // avoid < 0
                 const currentInfo: SubtitleInfo = {
                     from,
-                    to: from + this.setting.duration, // default duration is 3
+                    to: from + extra.duration, // default duration is 3
                     location: 2,
                     content: danmu.msg
                 }
@@ -44,7 +45,7 @@ export class BCCConvertRunner extends MainStreamRunner<BilibiliCommunityCaption,
             }
         }
 
-        delete this.setting.duration // delete duration property
+        delete this.setting.extra // delete extra property
 
         return {
             ...this.setting,
