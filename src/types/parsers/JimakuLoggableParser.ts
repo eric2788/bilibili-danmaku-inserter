@@ -10,9 +10,4 @@ export abstract class JimakuLoggableParser extends Loggable implements JimakuPar
 
     abstract parse(txt: string): Promise<Danmu[]>
 
-    
-
-    
-
-
 }
