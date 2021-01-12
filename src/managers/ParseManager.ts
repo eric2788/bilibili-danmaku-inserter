@@ -67,7 +67,7 @@ function addParser(parser: JimakuLoggableParser){
             await download({
                 content,
                 type: 'application/json',
-                file: f.name.replaceAll(/\.(.+)$/g, "-converted.json")
+                file: f.name.replaceAll(/\.([^.]+)$/g, "-converted.json")
             })
             return `转换成功`
         }
