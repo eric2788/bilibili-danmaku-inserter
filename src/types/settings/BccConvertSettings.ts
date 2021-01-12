@@ -8,6 +8,7 @@ export interface BccConvertSettings extends Satisfiable{
     background_color: string,
     Stroke: string,
     extra: {
-        duration: number
+        duration: number,
+        no_duplicated: boolean
     }
 }

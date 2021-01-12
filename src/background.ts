@@ -143,7 +143,7 @@ async function fetchUser(): Promise<{username: string, lvl: number}>{
 
 async function loadHtml(locate: string): Promise<string>{
     const res = await fetch(browser.runtime.getURL(locate))
-    if (!res.ok) if (!res.ok) throw new Error(`${res.statusText}(${res.status})`)
+    if (!res.ok) throw new Error(`${res.statusText}(${res.status})`)
     return await res.text()
 }
 

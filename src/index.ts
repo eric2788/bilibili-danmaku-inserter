@@ -75,14 +75,10 @@ TabManager.addTab<BilibiliCommunityCaption>({
                     background_color: $_.input('#bcc-bg-color').value ?? '#9C27B0',
                     Stroke: 'none',
                     extra: {
-                        duration: $_.input('#bcc-duration').valueAsNumber ?? 3
+                        duration: $_.input('#bcc-duration').valueAsNumber ?? 3,
+                        no_duplicated: $('input#avoid-duplicate').prop('checked') ?? true
                     },
-                    isSatisfied: () => {
-                        if (bccInfo.extra.duration > 15 || bccInfo.extra.duration < 3){
-                            return `字幕逗留时间超出范围 3 ~ 15`
-                        }
-                        return undefined
-                    }
+                    isSatisfied: () => undefined
                 }
                 return bccInfo
             },

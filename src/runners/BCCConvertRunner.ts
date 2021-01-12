@@ -20,7 +20,7 @@ export class BCCConvertRunner extends MainStreamRunner<BilibiliCommunityCaption,
         while (this.danmus.length > 0){
             try {
                 const danmu = this.danmus.shift()
-                const from = Math.max(0, parseFloat(((danmu.timestamp + this.delay) / 1000).toFixed(5))) // avoid < 0
+                const from = Math.max(0, parseFloat(((danmu.timestamp + this.delay) / 1000).toFixed(10))) // avoid < 0
                 const currentInfo: SubtitleInfo = {
                     from,
                     to: from + extra.duration, // default duration is 3
@@ -31,11 +31,15 @@ export class BCCConvertRunner extends MainStreamRunner<BilibiliCommunityCaption,
                 body.push(currentInfo)
                 this.info(`成功插入字幕[从=${from},到=${currentInfo.to},字幕=${currentInfo.content}]`, line)
 
-                if (lastInsert && from > 0 && lastInsert.to > from){
-                    lastInsert.to = from
-                }
+                if (extra.no_duplicated){
 
-                lastInsert = currentInfo
+                    if (lastInsert && from > 0 && lastInsert.to > from){
+                        lastInsert.to = from
+                    }
+    
+                    lastInsert = currentInfo
+
+                }
 
             }catch(err){
                 this.error(err)

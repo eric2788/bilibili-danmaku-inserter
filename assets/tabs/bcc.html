@@ -24,6 +24,23 @@
             <span class="input-group-text" id="bcc-duration-help">秒</span>
         </div>
     </div>
+    <div class="col-sm">
+        <label class="form-label" for="avoid-duplicate">防止字幕重叠</label>
+        <div class="form-check form-switch form-switch-md">
+            <input class="form-check-input" type="checkbox" id="avoid-duplicate" checked>
+        </div>
+        <style>
+        .form-switch.form-switch-md {
+            margin-bottom: 1rem; /* JUST FOR STYLING PURPOSE */
+        }
+
+        .form-switch.form-switch-md .form-check-input {
+            height: 1.5rem;
+            width: calc(2rem + 0.75rem);
+            border-radius: 3rem;
+        }
+        </style>
+    </div>
 </div>
 <button class="btn btn-primary" id="bcc-btn">
     开始转换
