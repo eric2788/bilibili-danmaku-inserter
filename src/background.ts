@@ -85,12 +85,12 @@ function toPayload(data: DanmuSendInfo){
         oid: video.oid,
         msg: data.msg,
         bvid: video.bid,
-        progress: data.nano,
+        progress: Math.round(data.nano), // 不支援小数点
         color: style.color,
         fontsize: size,
         pool,
         mode,
-        rnd: data.datetime ?? (Date.now() * 1000),
+        rnd: Math.round(data.datetime) || (Date.now() * 1000),
         plat: 1,
         csrf: csrfToken
     }

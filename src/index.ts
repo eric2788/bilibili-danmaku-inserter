@@ -13,6 +13,7 @@ import { BilibiliInserterSettings } from "./types/settings/BilibiliInserterSetti
 import { BilibiliCommunityCaption } from "./types/BilibiliCommunityCaption";
 import TabManager from "./managers/TabManager";
 import { ICUJimakuParser } from "./parsers/ICUJimakuParser";
+import { DanmujiXMLParser } from "./parsers/DanmujiXMLParser";
 
 const storage: any = {}
 
@@ -21,6 +22,7 @@ DanmakuManager.registerRunner(() => new BCCConvertRunner())
 
 ParseManager.addParser(new BilibilJimakuFilterParser())
 ParseManager.addParser(new ICUJimakuParser())
+ParseManager.addParser(new DanmujiXMLParser())
 
 $(`#check-update`).on('click', checkUpdate)
 

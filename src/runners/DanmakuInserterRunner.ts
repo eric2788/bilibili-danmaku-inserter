@@ -60,7 +60,7 @@ export class DanmakuInserterRunner extends MainStreamRunner<any, BilibiliInserte
 
                 const res = await sendDanmu({
                     msg: danmu.msg,
-                    nano: danmu.timestamp,
+                    nano: danmu.timestamp, 
                     payload: this.payload
                 })
 

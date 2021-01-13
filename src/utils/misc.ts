@@ -130,6 +130,22 @@ export function hexColorToDecmial(hex: string): number{
     return sum
 }
 
+export function toTimer(secs: number): string{
+    let min = 0;
+    let hr = 0;
+    while(secs >= 60){
+        secs -= 60
+        min++
+    }
+    while (min >= 60){
+        min -= 60
+        hr++
+    }
+    const mu = min > 9 ? `${min}`: `0${min}`
+    const ms = secs > 9 ? `${secs}` : `0${secs}`
+    return `${hr}:${mu}:${ms}`
+}
+
 export const isFirefox = navigator.userAgent.indexOf('Firefox') > -1
 
 export const isChrome = navigator.userAgent.indexOf('Chrome') > -1
