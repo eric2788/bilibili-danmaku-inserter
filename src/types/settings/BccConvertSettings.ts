@@ -9,6 +9,7 @@ export interface BccConvertSettings extends Satisfiable{
     Stroke: string,
     extra: {
         duration: number,
-        no_duplicated: boolean
+        no_duplicated: boolean,
+        min_dur: number
     }
 }

@@ -5,5 +5,6 @@ export interface TabInfo<T> {
     render?: string,
     name: string,
     active?: boolean,
-    runner: RunnerLoadingPattern<T> 
+    initialize?: () => void,
+    runner: RunnerLoadingPattern<T>
 }

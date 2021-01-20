@@ -48,6 +48,7 @@ async function addTab<T>(info: TabInfo<T>){
         $(`form#${id}-form`).append(formContent)
         clearLogLink(id)
         runnerLoadingPattern(runner, id)
+        info.initialize?.apply(window)
     }catch(err){
         console.error(err)
         await sendNotify({

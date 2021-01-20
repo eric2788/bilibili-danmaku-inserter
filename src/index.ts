@@ -64,6 +64,15 @@ TabManager.addTab<any>({
 TabManager.addTab<BilibiliCommunityCaption>({
     id: 'bcc',
     name: '转换成BCC字幕',
+    initialize: () => {
+        $('input#avoid-duplicate').on('input', e => {
+            const disabled = !$(e.target).prop('checked')
+            $_.toggleDisable('#bcc-min-duration', disabled)
+            if (disabled){
+                $_.input('#bcc-min-duration').valueAsNumber = 0.1
+            }
+        })
+    },
     runner: {
         btn: 'bcc-btn',
             loading: 'bcc-loading',
@@ -78,7 +87,8 @@ TabManager.addTab<BilibiliCommunityCaption>({
                     Stroke: 'none',
                     extra: {
                         duration: $_.input('#bcc-duration').valueAsNumber ?? 3,
-                        no_duplicated: $('input#avoid-duplicate').prop('checked') ?? true
+                        no_duplicated: $('input#avoid-duplicate').prop('checked') ?? true,
+                        min_dur: $_.input('#bcc-min-duration').valueAsNumber ?? 0.1
                     },
                     isSatisfied: () => undefined
                 }

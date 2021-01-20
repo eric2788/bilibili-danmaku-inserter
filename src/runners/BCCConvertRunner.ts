@@ -35,6 +35,11 @@ export class BCCConvertRunner extends MainStreamRunner<BilibiliCommunityCaption,
 
                     if (lastInsert && from > 0 && lastInsert.to > from){
                         lastInsert.to = from
+
+                        if ((lastInsert.from - lastInsert.to) < extra.min_dur){
+                            lastInsert.to += extra.min_dur
+                        }
+
                     }
     
                     lastInsert = currentInfo
