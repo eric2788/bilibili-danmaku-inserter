@@ -21,19 +21,21 @@ export class DomLogger implements Logger {
 
     info(msg: string): void {
         const ele = $(this.elemnt)
-        ele.append(`<p class="log">${this.name ?? ''}${msg}</p>`)
+        ele.append(`<p class="log">${msg}</p>`)
         ele.scrollTop(ele[0].scrollHeight)
     }
 
     error(e: Error): void {
+        if (this.name === 'parser' && !$('#show-error').prop('checked')) return
         const ele = $(this.elemnt)
-        ele.append(`<p class="log" style="color: red">${this.name ?? ''}${e.message}</p>`)
+        ele.append(`<p class="log" style="color: red">${e.message}</p>`)
         ele.scrollTop(ele[0].scrollHeight)
     }
 
     warn(msg: string): void {
+        if (this.name === 'parser' && !$('#show-warning').prop('checked')) return
         const ele = $(this.elemnt)
-        ele.append(`<p class="log" style="color: orange">${this.name ?? ''}${msg}</p>`)
+        ele.append(`<p class="log" style="color: orange">${msg}</p>`)
         ele.scrollTop(ele[0].scrollHeight)
     }
 

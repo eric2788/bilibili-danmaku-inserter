@@ -1,6 +1,6 @@
-import { download, hexColorToDecmial, loadingPattern, nameOf, throwError } from "./utils/misc";
+import { defaultRegex, download, hexColorToDecmial, loadingPattern, throwError } from "./utils/misc";
 import $ from 'jquery';
-import { checkUpdate, fetchUser, fetchVideo, sendNotify } from "./utils/messaging";
+import { checkUpdate, fetchUser, fetchVideo } from "./utils/messaging";
 import $_ from "./utils/jquery-extend";
 import ParseManager from './managers/ParseManager'
 import { BilibilJimakuFilterParser } from "./parsers/BilibiliJimakuFilterParser";
@@ -23,6 +23,12 @@ DanmakuManager.registerRunner(() => new BCCConvertRunner())
 ParseManager.addParser(new BilibilJimakuFilterParser())
 ParseManager.addParser(new ICUJimakuParser())
 ParseManager.addParser(new DanmujiXMLParser())
+
+$(`#jimaku-filter`).on('change', (e) => {
+    const checked = $(e.target).prop('checked')
+    $_.toggleDisable(`#jimaku-filter-regex`, !checked)
+    if (!checked) $_.input(`#jimaku-filter-regex`).value = defaultRegex
+})
 
 $(`#check-update`).on('click', checkUpdate)
 

@@ -1,6 +1,7 @@
 import { Danmu } from "../danmu/Danmu";
 import { Loggable } from "../../loggers/Loggable";
 import { JimakuParser } from "./JimakuParser";
+import { ParserSettings } from "../settings/ParserSettings";
 
 export abstract class JimakuLoggableParser extends Loggable implements JimakuParser {
 
@@ -8,6 +9,6 @@ export abstract class JimakuLoggableParser extends Loggable implements JimakuPar
     abstract acceptedFormat: string[]
     abstract link: string
 
-    abstract parse(txt: string): Promise<Danmu[]>
+    abstract parse(txt: string, setting: ParserSettings): Promise<Danmu[]>
 
 }

@@ -1,9 +1,10 @@
 import { ConsoleLogger } from "../loggers/ConsoleLogger"
 import { DomLogger } from "../loggers/DomLogger"
 import { JimakuLoggableParser } from "../types/parsers/JimakuLoggableParser"
-import { download, generateToken, loadingPattern, readAsText, throwError } from "../utils/misc"
+import { defaultRegex, download, generateToken, loadingPattern, readAsText, throwError } from "../utils/misc"
 import $ from 'jquery'
 import $_ from '../utils/jquery-extend'
+import { ParserSettings } from "../types/settings/ParserSettings"
 
 function addParser(parser: JimakuLoggableParser){
     const token = generateToken().split('').map(s => {
@@ -16,6 +17,8 @@ function addParser(parser: JimakuLoggableParser){
     const clearLog = `${token}-clear-log`
     const loading = `${token}-loading`
     const result = `${token}-result`
+    const filterSwitch = `jimaku-filter-${token}`
+    const filterRegex = `jimaku-filter-regex-${token}`
     const dom =  `
         <div class="card mb-3">
             <div class="card-header">
@@ -48,7 +51,9 @@ function addParser(parser: JimakuLoggableParser){
         </div>
     `
     $('#danmaku-convert').append(dom)
-    parser.addLogger(new DomLogger($(`#${loggerBox}`)[0]))
+    const domLogger = new DomLogger($(`#${loggerBox}`)[0])
+    domLogger.name = 'parser'
+    parser.addLogger(domLogger)
     parser.addLogger(new ConsoleLogger(window.console))
     loadingPattern({
         btn, loading, result,
@@ -62,7 +67,13 @@ function addParser(parser: JimakuLoggableParser){
                 throwError(`档案类型不支援: ${f.type}`)
             }
             const txt = await readAsText(f)
-            const danmus = await parser.parse(txt)
+            const settings: ParserSettings = {
+                filter: {
+                    enable: $(`#jimaku-filter`).prop('checked') ?? false,
+                    regex: $_.input(`#jimaku-filter-regex`).value ?? defaultRegex
+                }
+            }
+            const danmus = await parser.parse(txt, settings)
             const content = JSON.stringify(danmus)
             await download({
                 content,

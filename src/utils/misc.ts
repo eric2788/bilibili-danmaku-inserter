@@ -130,6 +130,8 @@ export function hexColorToDecmial(hex: string): number{
     return sum
 }
 
+export const defaultRegex = '^(?<n>[^【】]+?)?\\:?\\s*【(?<cc>[^【】]+?)(】.?)?$'
+
 export function toTimer(secs: number): string{
     let min = 0;
     let hr = 0;

@@ -1,4 +1,5 @@
 import { Danmu } from '../danmu/Danmu'
+import { ParserSettings } from '../settings/ParserSettings';
 
 export interface JimakuParser {
 
@@ -8,6 +9,6 @@ export interface JimakuParser {
 
     link: string
     
-    parse(txt: string): Promise<Danmu[]>
+    parse(txt: string, setting: ParserSettings): Promise<Danmu[]>
 
 }

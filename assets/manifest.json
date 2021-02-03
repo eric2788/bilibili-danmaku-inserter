@@ -2,7 +2,7 @@
 
     "manifest_version": 2,
     "name": "bilibili danmaku inserter",
-    "version": "0.4.2",
+    "version": "0.4.3",
   
     "description": "bilibili danmaku inserter by ericlam",
     "author": "Eric Lam",
