@@ -28,7 +28,7 @@ jobs:
     - name: get version from manifest.json
       run: |
         content=`cat ./assets/manifest.json`
-        export version=`echo $content | jq -r '.version'`
+        echo "version=`echo $content | jq -r '.version'`" >> $GITHUB_ENV
     - name: Npm init and build
       run: |
         npm install -g webpack-cli
