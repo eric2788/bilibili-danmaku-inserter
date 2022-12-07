@@ -4,7 +4,9 @@
   "description": "bilibili-danmaku-inserter by ericlam",
   "main": "index.js",
   "scripts": {
-    "clean": "rmdir /S /Q dist",
+    "clean": "run-script-os",
+    "clean:win32": "rmdir /S /Q dist web-ext-artifacts",
+    "clean:linux": "rm -rf dist web-ext-artifacts",
     "build": "webpack",
     "rebuild": "npm run clean && npm run build"
   },
@@ -32,6 +34,7 @@
   "devDependencies": {
     "copy-webpack-plugin": "^6.3.2",
     "eslint": "^7.14.0",
+    "run-script-os": "^1.1.6",
     "size-plugin": "^2.0.1",
     "terser-webpack-plugin": "^5.0.3",
     "ts-loader": "^8.0.12",
