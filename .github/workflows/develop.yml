@@ -1,5 +1,4 @@
 env:
-    version: 0.4.3
     name: bilibili_danmaku_inserter
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
 
@@ -21,6 +20,10 @@ jobs:
       with:
         node-version: 16.x
         check-latest: true
+    - name: get version from manifest.json
+      run: |
+        content=`cat ./assets/manifest.json`
+        export version=`echo $content | jq -r '.version'`
     - name: Npm init and build
       run: |
         npm install -g webpack-cli
