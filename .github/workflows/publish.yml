@@ -1,5 +1,6 @@
 env:
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+    artifact_name: bilibili_danmaku_inserter
 
 name: firefox extension publish and sign
   
@@ -19,7 +20,7 @@ jobs:
       uses: actions/setup-node@v2.1.2
       with:
         # Version Spec of the version to use.  Examples: 12.x, 10.15.1, >=10.15.0
-        node-version: 12.x
+        node-version: 16.x
         # Set this option if you want the action to check for the latest available version that satisfies the version spec
         check-latest: true
     - name: Npm init and build
@@ -32,7 +33,6 @@ jobs:
       run: |
         content=`cat ./assets/manifest.json`
         echo "version=`echo $content | jq -r '.version'`" >> $GITHUB_ENV
-        echo "artifact_name=`echo $content | jq -r '.name'`" >> $GITHUB_ENV
     - name: upload artifact
       uses: actions/upload-artifact@v2.2.4
       with:
@@ -93,6 +93,7 @@ jobs:
           asset_content_type: application/x-xpinstall
   upload-chrome:
     needs: [ build ]
+    if: {{ false }} # remember to remove it on next update
     name: Publish chrome webextension
     runs-on: ubuntu-latest
     steps:
