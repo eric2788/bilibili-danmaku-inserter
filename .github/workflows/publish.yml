@@ -93,7 +93,7 @@ jobs:
           asset_content_type: application/x-xpinstall
   upload-chrome:
     needs: [ build ]
-    if: {{ false }} # remember to remove it on next update
+    if: ${{ false }} # remember to remove it on next update
     name: Publish chrome webextension
     runs-on: ubuntu-latest
     steps:
