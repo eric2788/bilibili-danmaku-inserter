@@ -29,10 +29,6 @@ jobs:
         npm install -g web-ext
         npm install
         npm run build
-    - name: get envar from manifest.json
-      run: |
-        content=`cat ./assets/manifest.json`
-        echo "version=`echo $content | jq -r '.version'`" >> $GITHUB_ENV
     - name: upload artifact
       uses: actions/upload-artifact@v2.2.4
       with:
@@ -53,6 +49,10 @@ jobs:
       - name: Checkout Source Code
         id: checkout-source
         uses: actions/checkout@v2
+      - name: get envar from manifest.json
+        run: |
+          content=`cat ./assets/manifest.json`
+          echo "version=`echo $content | jq -r '.version'`" >> $GITHUB_ENV
       - name: download artifact
         id: download
         uses: actions/download-artifact@v3
