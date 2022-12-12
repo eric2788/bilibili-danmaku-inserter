@@ -7,11 +7,9 @@ name: firefox extension publish and sign
 on:
  push:
     branches: [ master ]
- pull_request:
-    branches: [ master ]
   
 jobs:
- build:
+  build:
     runs-on: ubuntu-20.04
   
     steps:
@@ -25,38 +23,81 @@ jobs:
         node-version: 12.x
         # Set this option if you want the action to check for the latest available version that satisfies the version spec
         check-latest: true
-    - name: get version from manifest.json
-      run: |
-        content=`cat ./assets/manifest.json`
-        echo "version=`echo $content | jq -r '.version'`" >> $GITHUB_ENV
     - name: Npm init and build
       run: |
         npm install -g webpack-cli
         npm install -g web-ext
         npm install
         npm run build
-    - name: web-ext sign package
-      run: web-ext sign --source-dir ./dist -v --api-key=${{ secrets.WEB_EXT_API_KEY }} --api-secret=${{ secrets.WEB_EXT_API_SECRET }}
-    - name: Delete tag and release
-      id: delete-tag-release
-      uses: dev-drprasad/delete-tag-and-release@v0.1.2
+    - name: upload artifact
+      uses: actions/upload-artifact@v2.2.4
       with:
-        tag_name: ${{ env.version }}
-        delete_release: true
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      with:
-        tag_name: ${{ env.version }}
-        release_name: Release ${{ github.repository }}-${{ env.version }}
-        body: check the commits for update
-        draft: false
-        prerelease: false
-    - name: Upload Release firefox extension
-      id: upload-release-asset-jar
-      uses: actions/upload-release-asset@v1
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-        asset_path: ./web-ext-artifacts/${{env.name}}-${{env.version}}-an+fx.xpi
-        asset_name: ${{env.name}}-${{env.version}}-an+fx.xpi
-        asset_content_type: application/x-xpinstall
+        name: ${{ env.artifact_name }}
+        path: dist
+
+  upload-firefox:
+    runs-on: ubuntu-latest
+    needs: [ build ]
+    steps:
+      - name: Checkout Source Code
+        id: checkout-source
+        uses: actions/checkout@v2
+      - name: download artifact
+        id: download
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ env.artifact_name }}
+          path: dist
+      - name: get version from manifest.json
+        run: |
+          content=`cat ./assets/manifest.json`
+          echo "version=`echo $content | jq -r '.version'`" >> $GITHUB_ENV
+      - name: web-ext sign package
+        run: web-ext sign --source-dir ./dist -v --api-key=${{ secrets.WEB_EXT_API_KEY }} --api-secret=${{ secrets.WEB_EXT_API_SECRET }}
+      - name: Delete tag and release
+        id: delete-tag-release
+        uses: dev-drprasad/delete-tag-and-release@v0.1.2
+        with:
+          tag_name: ${{ env.version }}
+          delete_release: true
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{ env.version }}
+          release_name: Release ${{ github.repository }}-${{ env.version }}
+          body: check the commits for update
+          draft: false
+          prerelease: false
+      - name: Upload Release firefox extension
+        id: upload-release-asset-jar
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          asset_path: ./web-ext-artifacts/${{env.name}}-${{env.version}}-an+fx.xpi
+          asset_name: ${{env.name}}-${{env.version}}-an+fx.xpi
+          asset_content_type: application/x-xpinstall
+  upload-chrome:
+    needs: [ build ]
+    name: Publish chrome webextension
+    runs-on: ubuntu-latest
+    steps:
+      - name: download artifact
+        id: download
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ env.artifact_name }}
+      - name: zip the directory
+        run: |
+          [ -d ${{steps.download.outputs.download-path}} ] && ls -la ${{ steps.download.outputs.download-path }}
+          cd ${{steps.download.outputs.download-path}}
+          zip -r dist.zip .
+      - name: Upload & release
+        uses: Klemensas/chrome-extension-upload-action@master
+        with:
+          refresh-token: ${{ secrets.REFRESH_TOKEN}}
+          client-id: ${{ secrets.CLIENT_ID }}
+          client-secret: ${{ secrets.CLIENT_SECRET }}
+          file-name: 'dist.zip'
+          app-id: 'bmgjnpnoikglngkbkfhkbghkgjhhogca'
+          publish: true

@@ -6,8 +6,9 @@ name: firefox extension build developer
   
 on:
  push:
-    branches: [ develop, hotfix/2022 ]
-  
+    branches: [ develop ]
+ pull_request:
+    branches: [ develop, master ]
 jobs:
  build:
     runs-on: ubuntu-20.04
