@@ -67,7 +67,7 @@ jobs:
       - name: Npm init
         run: npm install -g web-ext
       - name: web-ext sign package
-        run: web-ext sign --source-dir ./dist -v --api-key=${{ secrets.WEB_EXT_API_KEY }} --api-secret=${{ secrets.WEB_EXT_API_SECRET }}
+        run: web-ext sign --source-dir ${{steps.download.outputs.download-path}} -v --api-key=${{ secrets.WEB_EXT_API_KEY }} --api-secret=${{ secrets.WEB_EXT_API_SECRET }}
       - name: Delete tag and release
         id: delete-tag-release
         uses: dev-drprasad/delete-tag-and-release@v0.1.2
