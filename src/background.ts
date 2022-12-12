@@ -119,16 +119,16 @@ async function fetchUser(): Promise<{username: string, lvl: number}>{
         const csrfResult = await browser.tabs.executeScript(tab.id, {
             code: `/bili_jct=(.+?)[;$]/.exec(document.cookie)?.pop()`
         })
-        const usernameResult = await browser.tabs.executeScript(tab.id, {
-            code: `document.getElementById('h-name')?.innerText`
-        })
-        const lvlResult = await browser.tabs.executeScript(tab.id, {
-            code: `parseInt(document.getElementsByClassName('h-level')[0]?.getAttribute('lvl'))`
+        const midResult = await browser.tabs.executeScript(tab.id, {
+            code: `/DedeUserID=(\\d+?)[;$]/.exec(document.cookie)?.pop()`
         })
         await browser.tabs.remove(tab.id)
-        const result = [...csrfResult, ...usernameResult, ...lvlResult]
-        const [ token, username, lvl ] = result
-        if (!token || !username || !lvl) throwError('獲取資訊失敗，請稍候再嘗試。')
+        if (midResult.length === 0 || !midResult[0]) throwError('獲取用户UID失敗。')
+        const data = await webFetch(`https://api.bilibili.com/x/space/acc/info?mid=${midResult[0]}`)
+        if (data.code !== 0) throwError(`獲取用戶资讯 (${midResult[0]})失敗: ${data.message}`)
+        const {level: lvl, name: username } = data.data
+        const token = csrfResult[0]
+        if (!token || !username || !lvl) throwError('獲取用户資訊失敗。')
         console.log(`csrfToken: ${token}, username: ${username}. level: ${lvl}`)
         csrfToken = token
         return {username, lvl}

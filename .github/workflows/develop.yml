@@ -1,0 +1,40 @@
+env:
+    name: bilibili_danmaku_inserter
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+
+name: firefox extension build developer
+  
+on:
+ push:
+    branches: [ develop ]
+ pull_request:
+    branches: [ develop, master ]
+jobs:
+ build:
+    runs-on: ubuntu-20.04
+    steps:
+    - name: Checkout Source Code
+      id: checkout-source
+      uses: actions/checkout@v2
+    - name: Setup Node.js environment
+      uses: actions/setup-node@v2.1.2
+      with:
+        node-version: 16.x
+        check-latest: true
+    - name: get version from manifest.json
+      run: |
+        content=`cat ./assets/manifest.json`
+        echo "version=`echo $content | jq -r '.version'`" >> $GITHUB_ENV
+    - name: Npm init and build
+      run: |
+        npm install -g webpack-cli
+        npm install -g web-ext
+        npm install
+        npm run build
+    - name: web-ext build package
+      run: web-ext build --source-dir ./dist -v
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ env.name }}-${{ env.version }}.zip
+        path: ./web-ext-artifacts/${{ env.name }}-${{ env.version }}.zip

@@ -55,6 +55,9 @@ TabManager.addTab<any>({
                     if (!biliInsertSettings.currentVideo){
                         return '没有视频资讯'
                     }
+                    if (!storage.username) {
+                        return '未索取弹幕发送者'
+                    }
                     if (!biliInsertSettings.danmuStyle){
                         return '没有弹幕设定'
                     }
@@ -133,6 +136,7 @@ loadingPattern({
     run: async () => {
         const {username, lvl} = await fetchUser()
         verifyLevel(lvl)
+        storage.username = username
         return `弹幕发送者: ${username} (Lv${lvl})`
     }
 })
